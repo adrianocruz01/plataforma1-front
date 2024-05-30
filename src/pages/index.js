@@ -18,7 +18,7 @@ const TasksPage = () => {
   const fetchTasks = async () => {
     try {
       const response = await fetch(
-        "https://zurytreinamento-11df2808e851.herokuapp.com/listar-treinamentos"
+        "https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/listar-treinamentos"
       );
       const data = await response.json();
       setTasks(data.data);
@@ -32,7 +32,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        "https://zurytreinamento-11df2808e851.herokuapp.com/novo-treinamento",
+        "https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/novo-treinamento",
         {
           method: "POST",
           headers: {
@@ -55,7 +55,7 @@ const TasksPage = () => {
   const deleteTask = async (taskId) => {
     try {
       await fetch(
-        `https://zurytreinamento-11df2808e851.herokuapp.com/deletar-treinamento/${taskId}`,
+        `https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/deletar-treinamento/${taskId}`,
         {
           method: "DELETE",
         }
@@ -71,7 +71,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        `https://zurytreinamento-11df2808e851.herokuapp.com/editar-treinamento/${taskId}`,
+        `https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/editar-treinamento/${taskId}`,
         {
           method: "PUT",
           headers: {
