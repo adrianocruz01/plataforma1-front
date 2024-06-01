@@ -18,7 +18,7 @@ const TasksPage = () => {
   const fetchTasks = async () => {
     try {
       const response = await fetch(
-        "https://treinamento-back-bba33a6c4f46.herokuapp.com/listar-treinamentos"
+        "https://treinamento-back-52d6b8a90d66.herokuapp.com/listar-treinamentos"
       );
       const data = await response.json();
       setTasks(data.data);
@@ -32,7 +32,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        "https://treinamento-back-bba33a6c4f46.herokuapp.com/novo-treinamento",
+       "https://treinamento-back-52d6b8a90d66.herokuapp.com/ovo-treinamento",
         {
           method: "POST",
           headers: {
