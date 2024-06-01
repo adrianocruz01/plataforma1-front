@@ -32,7 +32,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-       "https://treinamento-back-52d6b8a90d66.herokuapp.com/ovo-treinamento",
+       "https://treinamento-back-52d6b8a90d66.herokuapp.com/novo-treinamento",
         {
           method: "POST",
           headers: {
