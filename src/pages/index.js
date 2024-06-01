@@ -55,7 +55,7 @@ const TasksPage = () => {
   const deleteTask = async (taskId) => {
     try {
       await fetch(
-        `https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/deletar-treinamento/${taskId}`,
+        `https://treinamento-back-52d6b8a90d66.herokuapp.com/deletar-treinamento/${taskId}`,
         {
           method: "DELETE",
         }
@@ -71,7 +71,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        `https://treinamento-maker-back-bba33a6c4f46.herokuapp.com/editar-treinamento/${taskId}`,
+        `https://treinamento-back-52d6b8a90d66.herokuapp.com/editar-treinamento/${taskId}`,
         {
           method: "PUT",
           headers: {
