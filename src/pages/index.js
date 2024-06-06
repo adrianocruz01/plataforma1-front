@@ -142,7 +142,7 @@ const TasksPage = () => {
                     />
                   </div>
                 ) : (
-                  <div className="h-9 max-w-sm text-ellipsis overflow-hidden whitespace-nowrap">
+                  <div className="flex-grow whitespace-normal">
                     {task.description}
                   </div>
                 )}
