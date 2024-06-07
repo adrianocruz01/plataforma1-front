@@ -18,7 +18,7 @@ const TasksPage = () => {
   const fetchTasks = async () => {
     try {
       const response = await fetch(
-        "https://treinamento-back-52d6b8a90d66.herokuapp.com/listar-treinamentos"
+        "http://localhost:3000/listar-treinamentos"
       );
       const data = await response.json();
       setTasks(data.data);
@@ -32,7 +32,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-       "https://treinamento-back-52d6b8a90d66.herokuapp.com/novo-treinamento",
+       "http://localhost:3000/novo-treinamento",
         {
           method: "POST",
           headers: {
@@ -55,7 +55,7 @@ const TasksPage = () => {
   const deleteTask = async (taskId) => {
     try {
       await fetch(
-        `https://treinamento-back-52d6b8a90d66.herokuapp.com/deletar-treinamento/${taskId}`,
+        `http://localhost:3000/deletar-treinamento/${taskId}`,
         {
           method: "DELETE",
         }
@@ -71,7 +71,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        `https://treinamento-back-52d6b8a90d66.herokuapp.com/editar-treinamento/${taskId}`,
+        `http://localhost:3000/editar-treinamento/${taskId}`,
         {
           method: "PUT",
           headers: {
