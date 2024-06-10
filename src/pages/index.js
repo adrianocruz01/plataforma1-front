@@ -18,7 +18,7 @@ const TasksPage = () => {
   const fetchTasks = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/listar-treinamentos"
+        "https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/listar-treinamentos"
       );
       const data = await response.json();
       setTasks(data.data);
@@ -32,7 +32,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-       "http://localhost:3000/novo-treinamento",
+       "https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/novo-treinamento",
         {
           method: "POST",
           headers: {
@@ -55,7 +55,7 @@ const TasksPage = () => {
   const deleteTask = async (taskId) => {
     try {
       await fetch(
-        `http://localhost:3000/deletar-treinamento/${taskId}`,
+        `https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/deletar-treinamento/${taskId}`,
         {
           method: "DELETE",
         }
@@ -71,7 +71,7 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/editar-treinamento/${taskId}`,
+        `https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/editar-treinamento/${taskId}`,
         {
           method: "PUT",
           headers: {
