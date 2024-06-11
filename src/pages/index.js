@@ -10,6 +10,7 @@ const TasksPage = () => {
   const [newTaskText, setNewTaskText] = useState("");
   const [newTaskImgURL, setNewTaskImgURL] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingTaskText, setEditingTaskText] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -67,7 +68,7 @@ const TasksPage = () => {
   };
 
   const editTask = async (taskId) => {
-    if (!newTaskText) return;
+    if (!editingTaskText) return;
 
     try {
       const response = await fetch(
@@ -78,7 +79,7 @@ const TasksPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            description: newTaskText,
+            description: editingTaskText,
             image: newTaskImgURL === "" ? null : newTaskImgURL,
           }),
         }
@@ -86,10 +87,17 @@ const TasksPage = () => {
       const data = await response.json();
       setTasks(tasks.map((task) => (task.id === taskId ? data : task)));
       setEditingTaskId(null);
+      setEditingTaskText("");
     } catch (error) {
       console.error("Erro ao editar tarefa:", error);
     }
   };
+
+  const editingTask = (taskId) => {
+    setEditingTaskId(taskId);
+    const editedTask = tasks.find((task) => task.id === taskId);
+    setEditingTaskText(editedTask.description);
+  }
 
   return (
     <div className="flex justify-center min-h-screen w-full">
@@ -128,8 +136,8 @@ const TasksPage = () => {
                   <div className="flex gap-3 flex-col lg:flex-row">
                     <input
                       type="text"
-                      value={newTaskText}
-                      onChange={(e) => setNewTaskText(e.target.value)}
+                      value={editingTaskText}
+                      onChange={(e) => setEditingTaskText(e.target.value)}
                       placeholder="Descreva o novo treinamento"
                       className="h-9 rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
                     />
@@ -149,8 +157,8 @@ const TasksPage = () => {
                 {editingTaskId === task.id ? (
                   <div className="flex gap-1 mt-3">
                     <button
-                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300"
-                      onClick={() => editTask(task.id, newTaskText)}
+                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300 h-[34px]"
+                      onClick={() => editTask(task.id, editingTaskText)}
                     >
                       <Image
                         src={Folder}
@@ -160,7 +168,7 @@ const TasksPage = () => {
                       />
                     </button>
                     <button
-                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300"
+                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300 h-[34px]"
                       onClick={() => setEditingTaskId(null)}
                     >
                       <Image
@@ -172,10 +180,10 @@ const TasksPage = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex gap-1 w-max">
+                  <div className="flex gap-1 w-max items-center">
                     <button
-                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300"
-                      onClick={() => setEditingTaskId(task.id)}
+                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300 h-[34px]"
+                      onClick={() => editingTask(task.id)}
                     >
                       <div>
                         <Image
@@ -187,7 +195,7 @@ const TasksPage = () => {
                       </div>
                     </button>
                     <button
-                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300"
+                      className="p-2 rounded-full hover:bg-zinc-200 transition-colors duration-300 h-[34px]"
                       onClick={() => deleteTask(task.id)}
                     >
                       <Image
