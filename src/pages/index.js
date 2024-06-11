@@ -11,6 +11,7 @@ const TasksPage = () => {
   const [newTaskImgURL, setNewTaskImgURL] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTaskText, setEditingTaskText] = useState("");
+  const [editingTaskImgURL, setEditingTaskImgURL] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -80,7 +81,7 @@ const TasksPage = () => {
           },
           body: JSON.stringify({
             description: editingTaskText,
-            image: newTaskImgURL === "" ? null : newTaskImgURL,
+            image: editingTaskImgURL === "" ? null : editingTaskImgURL,
           }),
         }
       );
@@ -88,6 +89,7 @@ const TasksPage = () => {
       setTasks(tasks.map((task) => (task.id === taskId ? data : task)));
       setEditingTaskId(null);
       setEditingTaskText("");
+      setEditingTaskImgURL("");
     } catch (error) {
       console.error("Erro ao editar tarefa:", error);
     }
@@ -97,6 +99,7 @@ const TasksPage = () => {
     setEditingTaskId(taskId);
     const editedTask = tasks.find((task) => task.id === taskId);
     setEditingTaskText(editedTask.description);
+    setEditingTaskImgURL(editedTask.image);
   }
 
   return (
@@ -143,8 +146,8 @@ const TasksPage = () => {
                     />
                     <input
                       type="url"
-                      value={newTaskImgURL}
-                      onChange={(e) => setNewTaskImgURL(e.target.value)}
+                      value={editingTaskImgURL}
+                      onChange={(e) => setEditingTaskImgURL(e.target.value)}
                       placeholder="Nova URL da imagem (opicional)"
                       className="h-9 rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
                     />
