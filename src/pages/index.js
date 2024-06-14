@@ -15,12 +15,19 @@ const TasksPage = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [tasks]);
 
   const fetchTasks = async () => {
     try {
       const response = await fetch(
-        "https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/listar-treinamentos"
+        `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=`,
+        {
+          method: "GET",
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+          maxBodyLength: Infinity,
+        }
       );
       const data = await response.json();
       setTasks(data.data);
@@ -34,10 +41,11 @@ const TasksPage = () => {
 
     try {
       const response = await fetch(
-       "https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/novo-treinamento",
+        `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
         {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -54,29 +62,16 @@ const TasksPage = () => {
     }
   };
 
-  const deleteTask = async (taskId) => {
-    try {
-      await fetch(
-        `https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/deletar-treinamento/${taskId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      setTasks(tasks.filter((task) => task.id !== taskId));
-    } catch (error) {
-      console.error("Erro ao deletar tarefa:", error);
-    }
-  };
-
   const editTask = async (taskId) => {
     if (!editingTaskText) return;
 
     try {
       const response = await fetch(
-        `https://treinamento-back-ifp-2-6a214bf57729.herokuapp.com/editar-treinamento/${taskId}`,
+        `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${taskId}`,
         {
           method: "PUT",
           headers: {
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -95,6 +90,23 @@ const TasksPage = () => {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${taskId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+      setTasks(tasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Erro ao deletar tarefa:", error);
+    }
+  };
+
   const editingTask = (taskId) => {
     setEditingTaskId(taskId);
     const editedTask = tasks.find((task) => task.id === taskId);
@@ -108,12 +120,14 @@ const TasksPage = () => {
         <h1 className="text-2xl font-semibold mt-16 mb-8">Treinamentos</h1>
         <div className="border border-zinc-300 px-10 py-8 flex flex-col rounded-2xl h-fit max-w-4xl min-w-full">
           <div className="flex gap-3 mb-6 flex-col">
-            <input
+            <textarea
+              wrap="hard"
+              rows="5"
               type="text"
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
               placeholder="Descreva o treinamento"
-              className="h-9 rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
+              className="rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
             />
             <input
               type="url"
@@ -136,13 +150,15 @@ const TasksPage = () => {
                 className="border border-zinc-300 p-4 rounded-md mb-2 last:mb-0 flex justify-between flex-col md:flex-row"
               >
                 {editingTaskId === task.id ? (
-                  <div className="flex gap-3 flex-col lg:flex-row">
-                    <input
+                  <div className="flex gap-3 flex-col w-full">
+                    <textarea
+                      wrap="hard"
+                      rows="5"
                       type="text"
                       value={editingTaskText}
                       onChange={(e) => setEditingTaskText(e.target.value)}
                       placeholder="Descreva o novo treinamento"
-                      className="h-9 rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
+                      className="rounded-md p-1 focus-visible:outline-none border border-zinc-300 focus-visible:border-zinc-600"
                     />
                     <input
                       type="url"
