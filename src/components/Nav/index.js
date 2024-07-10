@@ -5,15 +5,45 @@ import LogoQuadrado from "../../assets/images/logo-quadrado.png";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { useState } from "react";
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { useState, useEffect } from "react";
 
-const Nav = ({ page, assistants }) => {
+const Nav = ({ page }) => {
     const [menu, setMenu] = useState(false);
+    const [assistants, setAssistants] = useState([]);
+
     const handleMenu = () => {
         setMenu(!menu);
     };
     const active = "text-sky-700 bg-sky-50 hover:bg-sky-100";
     const inactive = "text-neutral-700 hover:bg-neutral-200";
+
+    useEffect(() => {
+        fetchAssistants();
+    }, []);
+
+    const fetchAssistants = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEURL}/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}/assistants?page=1&pageSize=150&query=`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+                    },
+                    maxBodyLength: Infinity,
+                }
+            );
+            const data = await response.json();
+            setAssistants(data.data);
+            console.log(data)
+        } catch (error) {
+            console.error("Erro ao buscar tarefas:", error);
+        }
+    };
+
+
     return (
         <nav className="bg-neutral-50 shadow-xl border-r border-neutral-100 flex flex-col relative">
             <div className="flex md:mb-10 md:px-8 md:pt-8 md:pb-0 p-6">
@@ -71,6 +101,24 @@ const Nav = ({ page, assistants }) => {
                     >
                         <LightbulbOutlinedIcon fontSize="small" />
                         Treinamentos
+                    </Link>
+                    <Link
+                        href="/configuracoes"
+                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
+                            page === "configuracoes" ? active : inactive
+                        }`}
+                    >
+                        <SettingsOutlinedIcon fontSize="small" />
+                        Configurações
+                    </Link>
+                    <Link
+                        href="/conexoes"
+                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
+                            page === "conexoes" ? active : inactive
+                        }`}
+                    >
+                        <WhatsAppIcon fontSize="small" />
+                        Conexões
                     </Link>
                 </div>
             </div>
