@@ -64,7 +64,7 @@ const HomePage = () => {
                     />
                     <Card
                         href="treinamentos"
-                        title="Sistema TeCOnvida"
+                        title="Sistema TeConvida"
                         src={TeConvida}
                     />
                     <Card
