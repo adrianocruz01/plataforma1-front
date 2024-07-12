@@ -9,7 +9,7 @@ const TrainingsPage = () => {
                 
             </div>
             <Nav page="conexoes"  />
-            <div className="px-6 md:px-10 w-full bg-neutral-100">
+            <div className="px-6 md:px-10 w-full bg-animate">
                 <h1 className="text-3xl font-bold mt-16 mb-8">Conexões</h1>
                 <div className="max-w-5xl">
                     <div className="bg-white rounded-2xl shadow-lg p-8">

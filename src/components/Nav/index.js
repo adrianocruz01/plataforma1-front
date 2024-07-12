@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../assets/images/logo.png";
 import LogoQuadrado from "../../assets/images/logo-quadrado.png";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState, useEffect } from "react";
 
 const Nav = ({ page }) => {
@@ -37,12 +37,11 @@ const Nav = ({ page }) => {
             );
             const data = await response.json();
             setAssistants(data.data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Erro ao buscar tarefas:", error);
         }
     };
-
 
     return (
         <nav className="bg-neutral-50 shadow-xl border-r border-neutral-100 flex flex-col relative">
@@ -72,53 +71,53 @@ const Nav = ({ page }) => {
                 {assistants?.map((assistant, index) => {
                     if (assistant.id === process.env.NEXT_PUBLIC_ASSISTANT_ID) {
                         return (
-                            <div key={index} className="border-y border-neutral-300 px-6 py-3">
-                                <h2 className="text-lg font-medium">
-                                    {assistant.name}
-                                </h2>
-                                <h3 className="text-xs min-w-max">
-                                    {assistant.supportFor}
-                                </h3>
+                            <div
+                                key={index}
+                                className="border-y border-neutral-300 px-6 py-3 flex items-center gap-2"
+                            >
+                                <div>
+                                    {assistant.avatar ? (
+                                        <AccountCircleIcon fontSize="large" />
+                                    ) : (
+                                        <AccountCircleIcon fontSize="large" />
+                                    )}
+                                </div>
+                                <div>
+                                    <h2 className="text-base font-medium">
+                                        {assistant.name}
+                                    </h2>
+                                    <h3 className="text-xs min-w-max">
+                                        {assistant.supportFor}
+                                    </h3>
+                                </div>
                             </div>
                         );
                     }
                 })}
-                <div className="p-8 flex flex-col gap-4">
+                <div className="py-8 flex flex-col gap-4">
                     <Link
                         href="/"
-                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
+                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-md rounded-lg ${
                             page === "home" ? active : inactive
                         }`}
                     >
-                        <HomeOutlinedIcon fontSize="small" />
-                        Home
+                        <span>🕹️</span> Playground
                     </Link>
                     <Link
-                        href="/treinamentos"
-                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
+                        href="/treinamentos?tab=3"
+                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-md rounded-lg ${
                             page === "treinamentos" ? active : inactive
                         }`}
                     >
-                        <LightbulbOutlinedIcon fontSize="small" />
-                        Treinamentos
+                        <span>👨🏻‍🏫</span> Biblioteca
                     </Link>
                     <Link
-                        href="/configuracoes"
-                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
-                            page === "configuracoes" ? active : inactive
+                        href="/"
+                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-md rounded-lg ${
+                            page === "comportamento" ? active : inactive
                         }`}
                     >
-                        <SettingsOutlinedIcon fontSize="small" />
-                        Configurações
-                    </Link>
-                    <Link
-                        href="/conexoes"
-                        className={`flex items-center gap-2 transition-colors duration-200 px-3 py-2 text-sm rounded-lg ${
-                            page === "conexoes" ? active : inactive
-                        }`}
-                    >
-                        <WhatsAppIcon fontSize="small" />
-                        Conexões
+                        <span>💬</span>Ver conversas
                     </Link>
                 </div>
             </div>

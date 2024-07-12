@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import Nav from "@/components/Nav";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import Treinamento from "../assets/images/treinamento.jpeg"
+import WhatsApp from "../assets/images/whatsapp.jpeg"
+import CRM from "../assets/images/crm.jpeg"
+import MidiasSociais from "../assets/images/midias-sociais.jpeg"
+import Ligacoes from "../assets/images/ligacoes.jpeg"
+import Personalidade from "../assets/images/personalidade.jpeg"
+import SMS from "../assets/images/sms.jpeg"
+import TeConvida from "../assets/images/teconvida.jpeg"
+import Card from "@/components/Card";
 
 const HomePage = () => {
     const [assistants, setAssistants] = useState([]);
@@ -34,63 +39,49 @@ const HomePage = () => {
     return (
         <div className="flex min-h-screen w-full flex-col md:flex-row">
             <Nav page="home" assistants={assistants} />
-            <div className="px-6 md:px-10 w-full bg-neutral-100">
-                <h1 className="text-3xl font-bold mt-16 mb-8">Dashboard</h1>
-                <div className="bg-white rounded-2xl max-w-2xl shadow-lg">
-                    <h2 className="text-2xl font-semibold mb-6 px-6 pt-6">
-                        Funcionalidades
-                    </h2>
-                    <div>
-                        <Link
-                            href="treinamentos"
-                            className="flex gap-2 items-center border-t border-neutral-200 py-4 px-8 hover:bg-neutral-100 transition-colors duration-200"
-                        >
-                            <div className="text-orange-700 bg-orange-100 p-1 rounded-md">
-                                <LightbulbOutlinedIcon fontSize="large" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-xl font-medium">
-                                    Treinamentos
-                                </span>
-                                <span className="text-xs font-light">
-                                    Ensine seu assistente com textos, websites
-                                    ou documentos.
-                                </span>
-                            </div>
-                        </Link>
-                        <Link
-                            href="configuracoes"
-                            className="flex gap-2 items-center border-t border-neutral-200 py-4 px-8 hover:bg-neutral-100 transition-colors duration-200"
-                        >
-                            <div className="text-cyan-700 bg-cyan-100 p-1 rounded-md">
-                                <SettingsOutlinedIcon fontSize="large" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-xl font-medium">
-                                    Configurações
-                                </span>
-                                <span className="text-xs font-light">
-                                    Ensine seu assistente com comportamento e a Zury.
-                                </span>
-                            </div>
-                        </Link>
-                        <Link
-                            href="conexoes"
-                            className="flex gap-2 items-center border-t border-neutral-200 py-4 px-8 hover:bg-neutral-100 transition-colors duration-200"
-                        >
-                            <div className="text-green-700 bg-green-100 p-1 rounded-md">
-                                <WhatsAppIcon fontSize="large" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-xl font-medium">
-                                    Conexões
-                                </span>
-                                <span className="text-xs font-light">
-                                    Conecte seu WhatsApp.
-                                </span>
-                            </div>
-                        </Link>
-                    </div>
+            <div className="px-6 md:px-10 w-full bg-animate">
+                <h1 className="text-3xl font-bold mt-16 mb-8">Playground Zury</h1>
+                <div className="flex flex-wrap gap-8 justify-between">
+                    <Card
+                        href="conexoes"
+                        title="Conectar WhatsApp"
+                        src={WhatsApp}
+                    />
+                    <Card
+                        href="comportamento"
+                        title="Criar personalidade"
+                        src={Personalidade}
+                    />
+                    <Card
+                        href="treinamentos?tab=0"
+                        title="Treinar Zury"
+                        src={Treinamento}
+                    />
+                    <Card
+                        href="treinamentos"
+                        title="Ligações em massa"
+                        src={Ligacoes}
+                    />
+                    <Card
+                        href="treinamentos"
+                        title="Sistema TeCOnvida"
+                        src={TeConvida}
+                    />
+                    <Card
+                        href="treinamentos"
+                        title="Plataforma CRM"
+                        src={CRM}
+                    />
+                    <Card
+                        href="treinamentos"
+                        title="Conectar com mídias sociais"
+                        src={MidiasSociais}
+                    />
+                    <Card
+                        href="treinamentos"
+                        title="Disparo de SMS em massa"
+                        src={SMS}
+                    />
                 </div>
             </div>
         </div>
