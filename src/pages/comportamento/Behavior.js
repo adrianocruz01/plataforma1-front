@@ -22,9 +22,9 @@ const Behavior = () => {
                 }
             );
             e.target.disabled = false;
-            alert("Comportamento enviado com sucesso!")
+            alert("Personalidade enviado com sucesso!")
         } catch (error) {
-            console.error("Erro ao editar comportamento:", error);
+            console.error("Erro ao editar Personalidade:", error);
         }
     };
 
@@ -36,7 +36,7 @@ const Behavior = () => {
                         htmlFor="new-training"
                         className="pl-2 text-xs mb-2 border-l border-orange-600"
                     >
-                        Novo comportamento
+                        Novo Personalidade
                     </label>
                     <textarea
                         id="new-training"
@@ -45,7 +45,7 @@ const Behavior = () => {
                         type="text"
                         value={newBehavior}
                         onChange={(e) => setNewBehavior(e.target.value)}
-                        placeholder="Descreva o comportamento"
+                        placeholder="Descreva o Personalidade"
                         className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300"
                     />
                 </div>
