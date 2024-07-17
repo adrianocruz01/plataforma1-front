@@ -10,7 +10,7 @@ const Behavior = () => {
     const fetchQrCode = async () => {
         setError(null);
         try {
-            const response = await fetch('https://plataforma-back2-372c8ce9d4d3.herokuapp.com/qr-code-json', {
+            const response = await fetch('https://plataforma-back-wel-5bb2577d4a10.herokuapp.com/qr-code-json', {
                 method: 'GET',
             });
 
