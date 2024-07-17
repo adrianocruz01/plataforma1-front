@@ -12,7 +12,7 @@ const TrainingsPage = () => {
 
     const tabs = [
         { label: "Treinamento", id: "training", content: <AudioTraining /> },
-        { label: "Website", id: "website", content: <WebsiteTraining /> },
+        { label: "Site", id: "website", content: <WebsiteTraining /> },
         { label: "Documento", id: "document", content: <DocumentTraining /> },
         { label: "Biblioteca", id: "text", content: <TextTraining /> },
     ];
