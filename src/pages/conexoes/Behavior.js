@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 
 const Behavior = () => {
@@ -67,7 +68,7 @@ const Behavior = () => {
                 {error && <p className="text-red-600">{error}</p>}
                 {qrCode && (
                     <div> 
-                        {qrCode !== "Seu WhatsApp já está conectado à Z-API." ? (<img src={qrCode} alt="WhatsApp conectado" />) : 
+                        {qrCode !== "Seu WhatsApp já está conectado à Z-API." ? (<Image src={qrCode} alt="WhatsApp conectado" />) : 
                         (<div className="text-green-700 bg-green-100 p-1 rounded-md">
                         <CheckCircleOutlinedIcon fontSize="large" />
                         </div>)

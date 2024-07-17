@@ -31,7 +31,7 @@ const Chat = ({ chatID }) => {
         <div className="flex flex-col h-auto w-full overflow-y-scroll overflow-x-hidden">
             <div className="flex gap-5 mb-6 flex-col w-full">
                 <div className="flex flex-col w-full gap-4 p-4">
-                    {chat.map((message) => {
+                    {chat.map((message, index) => {
                         return (
                             <div
                                 className={`${
@@ -39,6 +39,7 @@ const Chat = ({ chatID }) => {
                                         ? "bg-cyan-600 ml-auto"
                                         : "bg-zinc-400"
                                 } w-[348px] p-6 flex gap-3 rounded-xl shadow-lg flex-col`}
+                                key={index}
                             >
                                 {message.audios.length ? (
                                     <div className="flex flex-col gap-4">
@@ -67,6 +68,7 @@ const Chat = ({ chatID }) => {
                                             width={256}
                                             height={705}
                                             className="h-auto max-w-64 rounded-lg"
+                                            alt={message.midiaContent}
                                         />
                                         <p>{message.midiaContent}</p>
                                     </div>

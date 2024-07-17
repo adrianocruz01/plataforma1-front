@@ -10,6 +10,7 @@ const Card = ({ href, title, src }) => {
                 width={300}
                 height={300}
                 className="rounded-[50px] border-4 border-stone-400 shadow-xl hover:shadow-2xl"
+                alt="icon"
             />
             <div className="text-xl font-semibold text-center mt-4">{title}</div>
         </Link>
