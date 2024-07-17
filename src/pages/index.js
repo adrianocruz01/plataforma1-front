@@ -9,6 +9,7 @@ import Personalidade from "../assets/images/personalidade.jpeg"
 import SMS from "../assets/images/sms.jpeg"
 import TeConvida from "../assets/images/teconvida.jpeg"
 import Card from "@/components/Card";
+import Image from "next/image";
 
 const HomePage = () => {
     const [assistants, setAssistants] = useState([]);

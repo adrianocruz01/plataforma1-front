@@ -145,7 +145,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                     />
                 </div>
             ) : (
-                <div className="flex-grow whitespace-normal">
+                <div className="flex-grow whitespace-normal break-all hyphens-auto">
                     {trainingInfo}
                 </div>
             )}

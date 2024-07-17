@@ -11,8 +11,8 @@ const Tabs = ({ tabs, initialTab }) => {
     const inactive = "text-neutral-700 hover:border-neutral-700 hover:border-b-2";
 
     return (
-        <div className="max-w-5xl">
-            <div className="flex mb-5">
+        <div className="">
+            <div className="flex mb-5 flex-wrap">
                 {tabs.map((tab, index) => (
                     <button
                         key={index}
