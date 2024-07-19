@@ -52,7 +52,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
         setEditMenu(false);
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/v1/affirmation/${trainingId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -86,7 +86,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
         setEditMenu(false);
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/v1/affirmation/${trainingId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -145,7 +145,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                     />
                 </div>
             ) : (
-                <div className="flex-grow whitespace-normal break-all hyphens-auto">
+                <div className="flex-grow whitespace-normal overflow-wrap-anywhere">
                     {trainingInfo}
                 </div>
             )}

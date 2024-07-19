@@ -13,7 +13,7 @@ const DocumentTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=DOCUMENT`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/v1/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=DOCUMENT`,
                 {
                     method: "GET",
                     headers: {
@@ -35,7 +35,7 @@ const DocumentTraining = () => {
 
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/v1/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
                 {
                     method: "POST",
                     headers: {
