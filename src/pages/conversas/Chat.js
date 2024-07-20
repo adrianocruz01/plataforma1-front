@@ -114,7 +114,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                 />
                 <div className="flex flex-col">
                     <div className="text-xl font-bold">
-                        {selectedChat.name ?? "Desconhecido"}
+                        {selectedChat?.name ?? "Desconhecido"}
                     </div>
                     <div className="text-sm">
                         {humanTalk
