@@ -12,9 +12,12 @@ const Chat = ({ selectedChat, fetchConversations }) => {
 
     useEffect(() => {
         fetchChat();
+    }, []);
+
+    useEffect(() => {
         setSrcImage(selectedChat.picture);
         setHumanTalk(selectedChat.humanTalk);
-    }, [fetchChat, selectedChat.picture, selectedChat.humanTalk]);
+    }, [selectedChat]);
 
     useEffect(() => {
         if (containerRef.current) {
