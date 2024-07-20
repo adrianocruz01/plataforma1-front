@@ -12,22 +12,19 @@ const Chat = ({ selectedChat, fetchConversations }) => {
 
     useEffect(() => {
         fetchChat();
-    }, []);
-
-    useEffect(() => {
         setSrcImage(selectedChat.picture);
         setHumanTalk(selectedChat.humanTalk);
     }, [selectedChat]);
+
+    const handleError = () => {
+        setSrcImage("");
+    };
 
     useEffect(() => {
         if (containerRef.current) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
     }, [chat]);
-
-    const handleError = () => {
-        setSrcImage("");
-    };
 
     const fetchChat = async () => {
         try {
