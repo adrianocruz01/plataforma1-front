@@ -14,11 +14,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
         fetchChat();
         setSrcImage(selectedChat.picture);
         setHumanTalk(selectedChat.humanTalk);
-    }, [selectedChat]);
-
-    const handleError = () => {
-        setSrcImage("");
-    };
+    });
 
     useEffect(() => {
         if (containerRef.current) {
@@ -26,6 +22,10 @@ const Chat = ({ selectedChat, fetchConversations }) => {
         }
     }, [chat]);
 
+    const handleError = () => {
+        setSrcImage("");
+    };
+    
     const fetchChat = async () => {
         try {
             const response = await fetch(
@@ -124,7 +124,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                 </div>
                 <button
                     onClick={handleHumanTalk}
-                    className={`ml-auto text-sm font-light p-2 rounded-full text-white ${
+                    className={`ml-auto text-xs font-light p-2 rounded-full text-white ${
                         humanTalk ? "bg-teal-600" : "bg-amber-600"
                     }`}
                 >
