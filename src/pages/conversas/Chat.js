@@ -124,7 +124,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                 </div>
                 <button
                     onClick={handleHumanTalk}
-                    className={`ml-auto text-sm font-light p-2 rounded-full text-white ${
+                    className={`ml-auto text-xs font-light p-2 rounded-full text-white ${
                         humanTalk ? "bg-teal-600" : "bg-amber-600"
                     }`}
                 >
