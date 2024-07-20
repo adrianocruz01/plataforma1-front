@@ -14,7 +14,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
         fetchChat();
         setSrcImage(selectedChat.picture);
         setHumanTalk(selectedChat.humanTalk);
-    });
+    }, [fetchChat, selectedChat.picture, selectedChat.humanTalk]);
 
     useEffect(() => {
         if (containerRef.current) {
@@ -25,7 +25,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
     const handleError = () => {
         setSrcImage("");
     };
-    
+
     const fetchChat = async () => {
         try {
             const response = await fetch(
