@@ -7,7 +7,6 @@ const Conversations = ({ onSelectedChat, conversations }) => {
 
     useEffect(() => {
         groupConversationsByDate();
-        selectMostRecentConversation();
     }, [conversations]);
 
     const groupConversationsByDate = () => {
@@ -22,15 +21,6 @@ const Conversations = ({ onSelectedChat, conversations }) => {
             return acc;
         }, {});
         setGroupedConversations(grouped);
-    };
-
-    const selectMostRecentConversation = () => {
-        if (conversations.length > 0) {
-            const mostRecentConversation = conversations.reduce((latest, conversation) => 
-                new Date(conversation.time) > new Date(latest.time) ? conversation : latest
-            );
-            onSelectedChat(mostRecentConversation);
-        }
     };
 
     const getDateLabel = (date) => {

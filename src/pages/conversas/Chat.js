@@ -4,13 +4,16 @@ import Image from "next/image";
 import Profile from "@/assets/images/profile.png";
 
 const Chat = ({ selectedChat, fetchConversations }) => {
-    const [chat, setChat] = useState([]);
     const containerRef = useRef(null);
+    const [chat, setChat] = useState([]);
     const [srcImage, setSrcImage] = useState("");
+    const [humanTalk, setHumanTalk] = useState(false);
+    const [newMessage, setNewMessage] = useState("");
 
     useEffect(() => {
         fetchChat();
         setSrcImage(selectedChat.picture);
+        setHumanTalk(selectedChat.humanTalk);
     }, [selectedChat]);
 
     const handleError = () => {
@@ -47,9 +50,7 @@ const Chat = ({ selectedChat, fetchConversations }) => {
             await fetch(
                 `${process.env.NEXT_PUBLIC_BASEURL}/chat-context/${
                     process.env.NEXT_PUBLIC_ASSISTANT_ID
-                }/conversation/${
-                    selectedChat.id
-                }?enable=${!selectedChat.humanTalk}`,
+                }/conversation/${selectedChat.id}?enable=${!humanTalk}`,
                 {
                     method: "PUT",
                     headers: {
@@ -58,15 +59,47 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                     maxBodyLength: Infinity,
                 }
             );
-        } catch {
+            fetchConversations();
+        } catch (error) {
             console.error("Erro ao alterar permissão:", error);
         }
     };
 
+    const sendMessage = async (newMessage) => {
+        if (!newMessage) return;
+        try {
+            await fetch(
+                `${process.env.NEXT_PUBLIC_BASEURL}/chat-context/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/conversation/${selectedChat.id}/reply`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_GM_TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        message: newMessage,
+                    }),
+                }
+            );
+            console.log(newMessage);
+            fetchChat();
+            setNewMessage("");
+        } catch (error) {
+            console.error("Erro ao enviar mensagem:", error);
+        }
+    };
+
     const handleHumanTalk = () => {
+        setHumanTalk(!humanTalk);
         enableHumanTalk();
-        fetchConversations();
-    }
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(newMessage);
+        }
+    };
 
     return (
         <div className="max-h-screen flex flex-col w-full">
@@ -84,13 +117,18 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                         {selectedChat.name ?? "Desconhecido"}
                     </div>
                     <div className="text-sm">
-                        {selectedChat.humanTalk
+                        {humanTalk
                             ? "Sendo atendido por um humano"
                             : "Sendo atendido pela Zury"}
                     </div>
                 </div>
-                <button onClick={handleHumanTalk} className="hidden">
-                    {selectedChat.humanTalk
+                <button
+                    onClick={handleHumanTalk}
+                    className={`ml-auto text-sm font-light p-2 rounded-full text-white ${
+                        humanTalk ? "bg-teal-600" : "bg-amber-600"
+                    }`}
+                >
+                    {humanTalk
                         ? "Voltar atendimento para a Zury"
                         : "Assumir a conversa"}
                 </button>
@@ -106,6 +144,18 @@ const Chat = ({ selectedChat, fetchConversations }) => {
                         ))}
                     </div>
                 </div>
+            </div>
+            <div className={`w-full p-4 ${humanTalk ? "block" : "hidden"}`}>
+                <textarea
+                    wrap="hard"
+                    rows="3"
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e)}
+                    placeholder="Escreva a mensagem e tecle ENTER"
+                    className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300 w-full"
+                />
             </div>
         </div>
     );
