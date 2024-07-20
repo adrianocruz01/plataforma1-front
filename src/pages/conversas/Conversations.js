@@ -7,7 +7,7 @@ const Conversations = ({ onSelectedChat, conversations }) => {
 
     useEffect(() => {
         groupConversationsByDate();
-    });
+    }, []);
 
     const groupConversationsByDate = () => {
         const grouped = conversations.reduce((acc, conversation) => {
