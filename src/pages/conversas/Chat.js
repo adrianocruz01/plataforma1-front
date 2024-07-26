@@ -2,8 +2,14 @@ import Message from "@/components/Message";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Profile from "@/assets/images/profile.png";
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
-const Chat = ({ selectedChat, fetchConversations }) => {
+const Chat = ({
+    selectedChat,
+    fetchConversations,
+    chatIsOpen,
+    setChatIsOpen,
+}) => {
     const containerRef = useRef(null);
     const [chat, setChat] = useState([]);
     const [srcImage, setSrcImage] = useState("");
@@ -102,21 +108,29 @@ const Chat = ({ selectedChat, fetchConversations }) => {
     };
 
     return (
-        <div className="max-h-screen flex flex-col w-full">
-            <div className="px-4 pb-4 flex gap-4 border-b items-center">
-                <Image
-                    src={srcImage ? srcImage : Profile}
-                    width={56}
-                    height={56}
-                    className="rounded-full max-h-14 max-w-14"
-                    alt="profile"
-                    onError={handleError}
-                />
+        <div
+            className={`md:flex max-h-screen flex-col w-full ${
+                chatIsOpen ? "flex" : "hidden"
+            }`}
+        >
+            <div className="md:px-4 pb-4 pl-0 pr-4 flex gap-4 border-b items-center">
+                <button onClick={() => setChatIsOpen(false)} className="md:hidden block -mr-3">
+                    <ArrowBackIosNewOutlinedIcon fontSize="small" />
+                </button>
+                <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">
+                    <Image
+                        src={srcImage ? srcImage : Profile}
+                        fill={true}
+                        className="rounded-full"
+                        alt="profile"
+                        onError={handleError}
+                    />
+                </div>
                 <div className="flex flex-col">
-                    <div className="text-xl font-bold">
+                    <div className="md:text-xl text-md font-bold">
                         {selectedChat?.name ?? "Desconhecido"}
                     </div>
-                    <div className="text-sm">
+                    <div className="md:text-sm text-xs">
                         {humanTalk
                             ? "Sendo atendido por um humano"
                             : "Sendo atendido pela Zury"}

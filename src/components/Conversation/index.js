@@ -12,19 +12,20 @@ const Conversation = ({ src, name, lastMessage, type }) => {
     };
     return (
         <div className="py-3 flex gap-3 w-full cursor-pointer">
-            <Image
-                src={srcImage ? srcImage : Profile}
-                width={56}
-                height={56}
-                className="rounded-full max-h-14 max-w-14"
-                alt="profile"
-                onError={handleError}
-            />
-            <div>
-                <div className="text-xl font-bold max-w-60 whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
+            <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">
+                <Image
+                    src={srcImage ? srcImage : Profile}
+                    fill={true}
+                    className="rounded-full"
+                    alt="profile"
+                    onError={handleError}
+                />
+            </div>
+            <div className="max-w-[calc(100%-56px)]">
+                <div className="md:text-xl text-md font-bold md:max-w-60 max-w-full whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
                     {name ?? "Desconhecido"}
                 </div>
-                <div className="font-light max-w-64 text-sm whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
+                <div className="font-light md:max-w-64 max-w-full text-sm whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
                     {type === "TEXT" ? (
                         lastMessage
                     ) : type === "AUDIO" ? (

@@ -2,7 +2,7 @@ import Conversation from "@/components/Conversation";
 import { useEffect, useState } from "react";
 import { format, isToday, isYesterday } from "date-fns";
 
-const Conversations = ({ onSelectedChat, conversations }) => {
+const Conversations = ({ onSelectedChat, conversations, chatIsOpen, setChatIsOpen }) => {
     const [groupedConversations, setGroupedConversations] = useState({});
 
     useEffect(() => {
@@ -24,7 +24,9 @@ const Conversations = ({ onSelectedChat, conversations }) => {
     };
 
     const getDateLabel = (date) => {
-        const parsedDate = new Date(date.split("/").reverse().join("-") + " 00:00:00");
+        const parsedDate = new Date(
+            date.split("/").reverse().join("-") + " 00:00:00"
+        );
         if (isToday(parsedDate)) {
             return "Hoje";
         } else if (isYesterday(parsedDate)) {
@@ -34,8 +36,17 @@ const Conversations = ({ onSelectedChat, conversations }) => {
         }
     };
 
+    const handleChat = (conversation) => {
+        onSelectedChat(conversation);
+        setChatIsOpen(true);
+    };
+
     return (
-        <div className="flex flex-col h-auto min-w-96 overflow-y-scroll overflow-x-hidden scrollbar-thin">
+        <div
+            className={`md:flex flex-col h-auto lg:min-w-80 min-w-full overflow-y-scroll overflow-x-hidden scrollbar-thin md:pr-0 pr-5 ${
+                chatIsOpen ? "hidden" : "flex"
+            }`}
+        >
             {Object.keys(groupedConversations).map((date) => (
                 <div key={date} className="mb-6">
                     <h2 className="text-md font-medium mb-2">
@@ -44,7 +55,7 @@ const Conversations = ({ onSelectedChat, conversations }) => {
                     <div className="flex gap-5 flex-col w-full">
                         {groupedConversations[date].map((conversation) => (
                             <div
-                                onClick={() => onSelectedChat(conversation)}
+                                onClick={() => handleChat(conversation)}
                                 key={conversation.id}
                             >
                                 <Conversation
