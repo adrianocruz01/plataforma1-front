@@ -109,12 +109,12 @@ const Chat = ({
 
     return (
         <div
-            className={`md:flex max-h-screen flex-col w-full ${
+            className={`lg:flex max-h-screen flex-col w-full ${
                 chatIsOpen ? "flex" : "hidden"
             }`}
         >
-            <div className="md:px-4 pb-4 pl-0 pr-4 flex gap-4 border-b items-center">
-                <button onClick={() => setChatIsOpen(false)} className="md:hidden block -mr-3">
+            <div className="lg:px-4 pb-4 pl-0 pr-4 flex gap-4 border-b items-center">
+                <button onClick={() => setChatIsOpen(false)} className="lg:hidden block -mr-3">
                     <ArrowBackIosNewOutlinedIcon fontSize="small" />
                 </button>
                 <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">

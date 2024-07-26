@@ -43,7 +43,7 @@ const Conversations = ({ onSelectedChat, conversations, chatIsOpen, setChatIsOpe
 
     return (
         <div
-            className={`md:flex flex-col h-auto lg:min-w-80 min-w-full overflow-y-scroll overflow-x-hidden scrollbar-thin md:pr-0 pr-5 ${
+            className={`lg:flex flex-col h-auto lg:min-w-80 lg:max-w-96 w-full overflow-y-scroll overflow-x-hidden scrollbar-thin md:pr-0 pr-5 ${
                 chatIsOpen ? "hidden" : "flex"
             }`}
         >
