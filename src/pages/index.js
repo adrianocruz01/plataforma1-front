@@ -13,6 +13,7 @@ import Card from "@/components/Card";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import HomeButton from "@/components/HomeButton";
 
 const HomePage = () => {
     const cards = [
@@ -111,34 +112,9 @@ const HomePage = () => {
     return (
         <div className="min-h-screen w-full bg-black flex flex-col md:flex-row overflow-hidden">
             <div className="flex md:flex-col justify-center md:items-center p-8 gap-5 h-full bg-slate-900 md:bg-transparent">
-                {buttons.map((button, index) => {
-                    const [isHover, setIsHover] = useState(false);
-
-                    return (
-                        <Link
-                            href={button.slug}
-                            className="relative flex items-center md:justify-center md:flex-row flex-col gap-2 h-full"
-                            onMouseEnter={() => setIsHover(true)}
-                            onMouseLeave={() => setIsHover(false)}
-                            key={index}
-                        >
-                            <div className="relative md:h-[60px] md:w-[60px] h-10 w-10">
-                                <Image
-                                    src={button.source}
-                                    fill={true}
-                                    className="hover:shadow-lg hover:shadow-cyan-800 rounded-xl transition-shadow"
-                                />
-                            </div>
-                            <div
-                                className={`text-white md:text-sm text-xs max-w-20 h-full md:h-auto md:absolute text-center md:text-left md:text-nowrap md:left-[70px] md:overflow-hidden transition-all duration-300 ease-in-out ${
-                                    isHover ? "md:max-w-96" : "md:max-w-0"
-                                }`}
-                            >
-                                {button.title}
-                            </div>
-                        </Link>
-                    );
-                })}
+                {buttons.map((button, index) => (
+                    <HomeButton button={button} index={index} />
+                ))}
             </div>
             <div className="relative h-full md:h-screen w-screen flex flex-col items-center justify-center">
                 <div className="bg-zury md:w-[500px] md:h-[500px] w-full h-[350px] flex items-center justify-center rounded-full relative z-[1]">
