@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-const HomeButton = ({ button, index }) => {
+const HomeButton = ({ button }) => {
     const [isHover, setIsHover] = useState(false);
 
     return (
@@ -11,7 +11,6 @@ const HomeButton = ({ button, index }) => {
             className="relative flex items-center md:justify-center md:flex-row flex-col gap-2 h-full"
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
-            key={index}
         >
             <div className="relative md:h-[60px] md:w-[60px] h-10 w-10">
                 <Image

@@ -113,7 +113,7 @@ const HomePage = () => {
         <div className="min-h-screen w-full bg-black flex flex-col md:flex-row overflow-hidden">
             <div className="flex md:flex-col justify-center md:items-center p-8 gap-5 h-full bg-slate-900 md:bg-transparent">
                 {buttons.map((button, index) => (
-                    <HomeButton button={button} index={index} />
+                    <HomeButton button={button} key={index} />
                 ))}
             </div>
             <div className="relative h-full md:h-screen w-screen flex flex-col items-center justify-center">
