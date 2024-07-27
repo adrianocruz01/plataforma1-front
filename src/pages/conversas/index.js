@@ -19,7 +19,7 @@ const ChatsPage = () => {
     const fetchConversations = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/v1/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/conversations?page&pageSize&query&channelType`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/conversations?page&pageSize&query&channelType`,
                 {
                     method: "GET",
                     headers: {
@@ -41,7 +41,7 @@ const ChatsPage = () => {
             <div className="px-6 md:px-10 w-full">
                 <h1 className="text-3xl font-bold mt-16 mb-8">Conversas</h1>
                 <div className="max-w-5xl">
-                    <div className="bg-white rounded-2xl shadow-lg md:p-8 py-5 pl-5 flex max-h-[calc(100vh-168px)] mb-9">
+                    <div className={`bg-white rounded-2xl shadow-lg md:p-8 py-5 ${chatIsOpen ? "pl-0" : "pl-5"} flex max-h-[calc(100vh-168px)] mb-9`}>
                         <Conversations
                             onSelectedChat={handleChatSelect}
                             conversations={conversations}

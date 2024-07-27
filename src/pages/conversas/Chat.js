@@ -35,7 +35,7 @@ const Chat = ({
     const fetchChat = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/v1/conversation/${selectedChat.id}/messages?page&pageSize`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/conversation/${selectedChat.id}/messages?page&pageSize`,
                 {
                     method: "GET",
                     headers: {
@@ -113,7 +113,7 @@ const Chat = ({
                 chatIsOpen ? "flex" : "hidden"
             }`}
         >
-            <div className="lg:px-4 pb-4 pl-0 pr-4 flex gap-4 border-b items-center">
+            <div className="px-4 pb-4 flex gap-4 border-b items-center">
                 <button onClick={() => setChatIsOpen(false)} className="lg:hidden block -mr-3">
                     <ArrowBackIosNewOutlinedIcon fontSize="small" />
                 </button>

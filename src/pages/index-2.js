@@ -7,34 +7,8 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Card from "@/components/Card";
 
 const HomePage = () => {
-    const [assistants, setAssistants] = useState([]);
-
-    useEffect(() => {
-        fetchAssistants();
-    }, []);
-
-    const fetchAssistants = async () => {
-        try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/v1/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}/assistants?page=1&pageSize=150&query=`,
-                {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
-                }
-            );
-            const data = await response.json();
-            setAssistants(data.data);
-        } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
-        }
-    };
-
     return (
         <div className="flex min-h-screen w-full flex-col md:flex-row">
-            <Nav page="home" assistants={assistants} />
             <div className="px-6 md:px-10 w-full bg-neutral-100">
                 <h1 className="text-3xl font-bold mt-16 mb-8">Dashboard</h1>
                 <div className="bg-white rounded-2xl max-w-2xl shadow-lg">

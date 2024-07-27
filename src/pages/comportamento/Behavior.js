@@ -8,7 +8,7 @@ const Behavior = () => {
         e.target.disabled = true;
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/v1/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/settings`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/settings`,
                 {
                     method: "PUT",
                     headers: {
