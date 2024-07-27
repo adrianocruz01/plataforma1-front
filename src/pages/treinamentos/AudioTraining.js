@@ -13,7 +13,7 @@ const AudioTraining = () => {
         e.target.disabled = true;
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/v1/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
                 {
                     method: "POST",
                     headers: {
