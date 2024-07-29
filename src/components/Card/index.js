@@ -6,7 +6,13 @@ const Card = ({ href, title, src, isHoverCircle }) => {
     const [isHover, setIsHover] = useState(false);
 
     return (
-        <Link href={href} className={`relative flex flex-col items-center animate-rotate-card ${isHoverCircle ? "animate-pause" : ""}`}>
+        <Link
+            href={href}
+            className={`relative flex flex-col items-center animate-rotate-card ${
+                isHoverCircle ? "animate-pause" : ""
+            }
+            ${href ? "" : "grayscale"}`}
+        >
             <Image
                 src={src}
                 width={120}

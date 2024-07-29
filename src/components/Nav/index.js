@@ -80,7 +80,7 @@ const Nav = ({ page }) => {
                 </button>
             </div>
             <div
-                className={`absolute md:static bg-neutral-50 top-full w-full ${
+                className={`absolute md:static bg-neutral-50 top-full w-full z-10 ${
                     menu ? "left-0" : "-left-full"
                 }`}
             >
