@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Profile from "@/assets/images/profile.png";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 
 const Chat = ({
     selectedChat,
@@ -15,6 +16,7 @@ const Chat = ({
     const [srcImage, setSrcImage] = useState("");
     const [humanTalk, setHumanTalk] = useState(false);
     const [newMessage, setNewMessage] = useState("");
+    const [rows, setRows] = useState(1);
 
     useEffect(() => {
         fetchChat();
@@ -35,13 +37,9 @@ const Chat = ({
     const fetchChat = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/conversation/${selectedChat.id}/messages?page&pageSize`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/messages?page=1&pageSize=1000000000`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
@@ -54,9 +52,7 @@ const Chat = ({
     const enableHumanTalk = async () => {
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/chat-context/${
-                    process.env.NEXT_PUBLIC_ASSISTANT_ID
-                }/conversation/${selectedChat.id}?enable=${!humanTalk}`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/${humanTalk ? "stop" : "start"}-human`,
                 {
                     method: "PUT",
                     headers: {
@@ -75,11 +71,10 @@ const Chat = ({
         if (!newMessage) return;
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/chat-context/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/conversation/${selectedChat.id}/reply`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/send-message`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_GM_TOKEN}`,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
@@ -87,7 +82,6 @@ const Chat = ({
                     }),
                 }
             );
-            console.log(newMessage);
             fetchChat();
             setNewMessage("");
         } catch (error) {
@@ -107,6 +101,20 @@ const Chat = ({
         }
     };
 
+    const handleChange = (e) => {
+        const previousRows = e.target.rows;
+        e.target.rows = 1;
+
+        const currentRows = Math.floor(e.target.scrollHeight / 24 - 1);
+
+        if (currentRows === previousRows) {
+            e.target.rows = currentRows;
+        }
+
+        setNewMessage(e.target.value);
+        setRows(currentRows);
+    };
+
     return (
         <div
             className={`lg:flex max-h-screen flex-col w-full ${
@@ -114,7 +122,10 @@ const Chat = ({
             }`}
         >
             <div className="px-4 pb-4 flex gap-4 border-b items-center">
-                <button onClick={() => setChatIsOpen(false)} className="lg:hidden block -mr-3">
+                <button
+                    onClick={() => setChatIsOpen(false)}
+                    className="lg:hidden block -mr-3"
+                >
                     <ArrowBackIosNewOutlinedIcon fontSize="small" />
                 </button>
                 <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">
@@ -159,17 +170,20 @@ const Chat = ({
                     </div>
                 </div>
             </div>
-            <div className={`w-full p-4 ${humanTalk ? "block" : "hidden"}`}>
+            <div className={`w-full flex gap-2 p-4 ${humanTalk ? "block" : "hidden"}`}>
                 <textarea
                     wrap="hard"
-                    rows="3"
+                    rows={rows}
                     type="text"
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                     onKeyDown={(e) => handleKeyDown(e)}
                     placeholder="Escreva a mensagem e tecle ENTER"
-                    className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300 w-full"
+                    className="rounded-3xl p-3 focus-visible:outline-none border border-neutral-300 focus-visible:border-neutral-500 w-full scrollbar-hidden"
                 />
+                <button onClick={() => sendMessage(newMessage)} className="md:hidden block min-w-[50px] rounded-full bg-sky-700 text-white">
+                    <SendOutlinedIcon />
+                </button>
             </div>
         </div>
     );

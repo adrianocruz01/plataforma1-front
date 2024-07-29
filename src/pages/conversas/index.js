@@ -19,13 +19,9 @@ const ChatsPage = () => {
     const fetchConversations = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/conversations?page&pageSize&query&channelType`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?agentId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&page=1&pageSize=1000000000`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();

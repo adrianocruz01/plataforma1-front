@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
+import { toast } from "react-toastify";
 
 const DocumentTraining = () => {
     const [trainings, setTrainings] = useState([]);
@@ -13,50 +14,53 @@ const DocumentTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=DOCUMENT`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=DOCUMENT`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            console.error("Erro ao buscar treinamentos:", error);
         }
     };
 
     const createTraining = async (e) => {
-        if (!newTrainingDocument || !newTrainingDocURL) return;
+        if (!newTrainingDocument || !newTrainingDocURL) {
+            toast.error("Os campos 'Novo treinamento' e 'Nome do arquivo' não podem ser vazios!");
+            return;
+        }
         e.target.disabled = true;
-
+        const payload = {
+            type: "DOCUMENT",
+            documentUrl: newTrainingDocURL,
+            documentName: newTrainingDocument,
+            documentMimetype: "application/pdf",
+        };
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        affirmationType: "DOCUMENT",
-                        documentUrl: newTrainingDocURL,
-                        documentName: newTrainingDocument,
-                        documentMimetype: "application/pdf",
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings([...trainings, data]);
-            setNewTrainingDocument("");
-            setNewTrainingDocURL("");
+            if (response.ok) {
+                toast.success('Treinamento cadastrado!')
+                setTrainings([...trainings, data]);
+                setNewTrainingDocument("");
+                setNewTrainingDocURL("");
+            } else {
+                toast.error('Erro ao criar treinamento.')
+            }
             e.target.disabled = false;
         } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
+            console.error("Erro ao criar treinamento:", error);
         }
     };
 

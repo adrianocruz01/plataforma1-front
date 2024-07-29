@@ -60,6 +60,14 @@ body::before {
     background-clip: content-box;
 }
 
+.scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
 .bg-zury {
     background-image: linear-gradient(
             to bottom,

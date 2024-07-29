@@ -5,6 +5,7 @@ import TextTraining from "./TextTraining";
 import WebsiteTraining from "./WebsiteTraining";
 import DocumentTraining from "./DocumentTraining";
 import { useRouter } from "next/router";
+import { ToastContainer, Bounce } from "react-toastify";
 
 const TrainingsPage = () => {
     const router = useRouter();
@@ -24,6 +25,19 @@ const TrainingsPage = () => {
                 <h1 className="text-3xl font-bold mt-16 mb-8">Treinamentos</h1>
                 <Tabs tabs={tabs} initialTab={tab ? Number(tab) : 0} />
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </div>
     );
 };

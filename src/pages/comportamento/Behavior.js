@@ -1,30 +1,61 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 const Behavior = () => {
     const [newBehavior, setNewBehavior] = useState("");
 
+    useEffect(() => {
+        fetchBehavior();
+    }, []);
+
+    const fetchBehavior = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_IBASEURL}/agents/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?page=1&pageSize=10000`,
+                {
+                    method: "GET",
+                }
+            );
+            const data = await response.json();
+            const selectedAssistant = data.data.find(
+                (assistant) =>
+                    assistant.id === process.env.NEXT_PUBLIC_ASSISTANT_ID
+            );
+            if (selectedAssistant) {
+                setNewBehavior(selectedAssistant.behavior);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar comportamento:", error);
+        }
+    };
+
     const createBehavior = async (e) => {
-        if (!newBehavior) return;
+        if (!newBehavior) {
+            toast.error("A descrição da personalidade não pode ser vazia.");
+            return;
+        }
         e.target.disabled = true;
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/settings`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/agents/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "PUT",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        prefferModel: "GPT_3_5_TURBO",
-                        behavior: newBehavior
+                        behavior: newBehavior,
                     }),
                 }
             );
+            if (response.ok) {
+                toast.success("Personalidade atualizada!");
+            } else {
+                toast.error("Erro ao atualizar personalidade.");
+            }
             e.target.disabled = false;
-            alert("Personalidade enviado com sucesso!")
         } catch (error) {
-            console.error("Erro ao editar Personalidade:", error);
+            console.error("Erro ao atualizar personalidade:", error);
         }
     };
 
@@ -36,7 +67,7 @@ const Behavior = () => {
                         htmlFor="new-training"
                         className="pl-2 text-xs mb-2 border-l border-orange-600"
                     >
-                        Novo Personalidade
+                        Personalidade
                     </label>
                     <textarea
                         id="new-training"
@@ -45,7 +76,7 @@ const Behavior = () => {
                         type="text"
                         value={newBehavior}
                         onChange={(e) => setNewBehavior(e.target.value)}
-                        placeholder="Descreva o Personalidade"
+                        placeholder="Descreva a personalidade"
                         className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300"
                     />
                 </div>

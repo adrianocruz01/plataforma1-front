@@ -72,7 +72,7 @@ const Behavior = () => {
                         (<div className="text-green-700 bg-green-100 p-1 rounded-md">
                         <CheckCircleOutlinedIcon fontSize="large" />
                         </div>)
-                        } {console.log(qrCode)}
+                        }
                     </div>
                 )}
             </div>

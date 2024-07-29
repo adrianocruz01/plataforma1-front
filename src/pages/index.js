@@ -23,19 +23,9 @@ const HomePage = () => {
             source: Biblioteca,
         },
         {
-            slug: "comportamento",
+            slug: "",
             title: "Criar personalidade",
             source: Personalidade,
-        },
-        {
-            slug: "treinamentos",
-            title: "Ligações em massa",
-            source: Ligacoes,
-        },
-        {
-            slug: "treinamentos",
-            title: "Sistema TeConvida",
-            source: TeConvida,
         },
         {
             slug: "https://crm.zury.ai/login",
@@ -43,17 +33,27 @@ const HomePage = () => {
             source: CRM,
         },
         {
-            slug: "treinamentos",
+            slug: "",
+            title: "Ligações em massa",
+            source: Ligacoes,
+        },
+        {
+            slug: "",
+            title: "Sistema TeConvida",
+            source: TeConvida,
+        },
+        {
+            slug: "",
             title: "Conectar mídias sociais",
             source: MidiasSociais,
         },
         {
-            slug: "treinamentos",
+            slug: "",
             title: "SMS em massa",
             source: SMS,
         },
         {
-            slug: "treinamentos",
+            slug: "",
             title: "Plano de Marketing",
             source: Marketing,
         },
@@ -117,7 +117,7 @@ const HomePage = () => {
                 ))}
             </div>
             <div className="relative h-full md:h-screen w-screen flex flex-col items-center justify-center">
-                <div className="bg-zury md:w-[500px] md:h-[500px] w-full h-[350px] flex items-center justify-center rounded-full relative z-[1]">
+                <div className="bg-zury md:w-[450px] md:h-[450px] w-full h-[350px] flex items-center justify-center rounded-full relative z-[1]">
                     <Link
                         href={"treinamentos?tab=0"}
                         onMouseEnter={() => setIsHover(true)}
