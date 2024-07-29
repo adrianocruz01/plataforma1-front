@@ -35,16 +35,13 @@ const Chat = ({
     const fetchChat = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/conversation/${selectedChat.id}/messages?page&pageSize`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/messages?page=1&pageSize=1000000000`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
+            console.log(data)
             setChat(data);
         } catch (error) {
             console.error("Erro ao buscar chat:", error);
@@ -114,7 +111,10 @@ const Chat = ({
             }`}
         >
             <div className="px-4 pb-4 flex gap-4 border-b items-center">
-                <button onClick={() => setChatIsOpen(false)} className="lg:hidden block -mr-3">
+                <button
+                    onClick={() => setChatIsOpen(false)}
+                    className="lg:hidden block -mr-3"
+                >
                     <ArrowBackIosNewOutlinedIcon fontSize="small" />
                 </button>
                 <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">

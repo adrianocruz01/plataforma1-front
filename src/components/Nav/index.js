@@ -10,33 +10,9 @@ const Nav = ({ page }) => {
     const [menu, setMenu] = useState(false);
     const [assistant, setAssistant] = useState({
         name: '',
-        supportFor: '',
+        jobName: '',
         avatar: ''
     });
-    const [assistants, setAssistants] = useState([]);
-
-    useEffect(() => {
-        fetchAssistants();
-    }, []);
-
-    const fetchAssistants = async () => {
-        try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}/assistants?page=1&pageSize=150&query=`,
-                {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
-                }
-            );
-            const data = await response.json();
-            setAssistants(data.data);
-        } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
-        }
-    };
 
     const handleMenu = () => {
         setMenu(!menu);
@@ -48,11 +24,11 @@ const Nav = ({ page }) => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const name = localStorage.getItem("name");
-            const supportFor = localStorage.getItem("supportFor");
+            const jobName = localStorage.getItem("jobName");
             const avatar = localStorage.getItem("avatar");
 
-            if (name && supportFor && avatar) {
-                setAssistant({ name, supportFor, avatar });
+            if (name && jobName && avatar) {
+                setAssistant({ name, jobName, avatar });
             } else {
                 fetchAssistant();
             }
@@ -62,13 +38,9 @@ const Nav = ({ page }) => {
     const fetchAssistant = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}/assistants?page=1&pageSize=150&query=`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/agents/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?page=1&pageSize=10000`,
                 {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
+                    method: "GET"
                 }
             );
             const data = await response.json();
@@ -76,11 +48,11 @@ const Nav = ({ page }) => {
                 assistant => assistant.id === process.env.NEXT_PUBLIC_ASSISTANT_ID
             );
             if (selectedAssistant) {
-                const { name, supportFor, avatar } = selectedAssistant;
+                const { name, jobName, avatar } = selectedAssistant;
                 localStorage.setItem("name", name);
-                localStorage.setItem("supportFor", supportFor);
+                localStorage.setItem("jobName", jobName);
                 localStorage.setItem("avatar", avatar);
-                setAssistant({ name, supportFor, avatar });
+                setAssistant({ name, jobName, avatar });
             }
         } catch (error) {
             console.error("Erro ao buscar assistente:", error);
@@ -122,7 +94,7 @@ const Nav = ({ page }) => {
                                 {assistant.name}
                             </h2>
                             <h3 className="text-xs min-w-max">
-                                {assistant.supportFor}
+                                {assistant.jobName}
                             </h3>
                         </div>
                     </div>

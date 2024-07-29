@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TextTraining = () => {
     const [trainings, setTrainings] = useState([]);
@@ -13,47 +15,56 @@ const TextTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&TEXT`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=TEXT`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            console.error("Erro ao buscar treinamentos:", error);
         }
     };
 
     const createTraining = async (e) => {
-        if (!newTrainingText) return;
+        if (!newTrainingText) {
+            toast.error("O campo 'Novo treinamento' não pode ser vazio!");
+            return;
+        }
         e.target.disabled = true;
         try {
+            const payload = {
+                type: "TEXT",
+                text: newTrainingText,
+            };
+
+            if (newTrainingImgURL) {
+                payload.image = newTrainingImgURL;
+            }
+
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        description: newTrainingText,
-                        image:
-                            newTrainingImgURL === "" ? null : newTrainingImgURL,
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings([...trainings, data]);
-            setNewTrainingText("");
+            if (response.ok) {
+                toast.success("Treinamento cadastrado!");
+                setNewTrainingText("");
+                setNewTrainingImgURL("");
+                setTrainings([...trainings, data]);
+            } else {
+                toast.error("Erro ao criar treinamento.");
+            }
             e.target.disabled = false;
         } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
+            console.error("Erro ao criar treinamento:", error);
         }
     };
 
@@ -83,7 +94,7 @@ const TextTraining = () => {
                         htmlFor="new-training-image"
                         className="pl-2 text-xs mb-2 border-l border-orange-600"
                     >
-                        Adicione uma imagem
+                        Adicione uma imagem (URL)
                     </label>
                     <input
                         id="new-training-image"

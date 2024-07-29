@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
+import { toast } from "react-toastify";
 
 const WebsiteTraining = () => {
     const [trainings, setTrainings] = useState([]);
@@ -14,49 +15,52 @@ const WebsiteTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=WEBSITE`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=WEBSITE`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            console.error("Erro ao buscar treinamentos:", error);
         }
     };
 
     const createTraining = async (e) => {
-        if (!newTrainingWebsite) return;
+        if (!newTrainingWebsite) {
+            toast.error("O campo 'Novo treinamento' não pode ser vazio!");
+            return;
+        }
         e.target.disabled = true;
-
+        const payload = {
+            type: "WEBSITE",
+            website: newTrainingWebsite,
+            trainingSubPages: subpagesNav,
+            trainingInterval: updateInterval,
+        };
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        affirmationType: "WEBSITE",
-                        websiteUrl: newTrainingWebsite,
-                        trainingSubPages: subpagesNav,
-                        trainingInterval: updateInterval,
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings([...trainings, data]);
-            setNewTrainingWebsite("");
+            if (response.ok) {
+                toast.success("Treinamento cadastrado!");
+                setTrainings([...trainings, data]);
+                setNewTrainingWebsite("");
+            } else {
+                toast.error("Erro ao criar treinamento.");
+            }
             e.target.disabled = false;
         } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
+            console.error("Erro ao criar treinamento:", error);
         }
     };
 
@@ -125,7 +129,9 @@ const WebsiteTraining = () => {
                                 checked={subpagesNav === "DISABLED"}
                                 onChange={(e) => handleRadio(e)}
                             />
-                            <label className="mr-3" htmlFor="no">Não</label>
+                            <label className="mr-3" htmlFor="no">
+                                Não
+                            </label>
                             <input
                                 className="mr-1"
                                 type="radio"

@@ -2,36 +2,49 @@ import { useEffect, useState } from "react";
 import useSpeechRecognition from "@/hooks/useSpeechRecognition";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import MicNoneOutlinedIcon from "@mui/icons-material/MicNoneOutlined";
+import { toast } from "react-toastify";
 
 const AudioTraining = () => {
     const [newTrainingText, setNewTrainingText] = useState("");
     const { startRecognition, transcript, isListening } =
         useSpeechRecognition();
 
-    const createTraining = async (e) => {
-        if (!newTrainingText) return;
-        e.target.disabled = true;
-        try {
-            await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        description: newTrainingText,
-                        image: null
-                    }),
+        const createTraining = async (e) => {
+            if (!newTrainingText) {
+                toast.error("O campo 'Novo treinamento' não pode ser vazio!");
+                return;
+            }
+            e.target.disabled = true;
+            try {
+                const payload = {
+                    type: "TEXT",
+                    text: newTrainingText,
+                };
+    
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(payload),
+                    }
+                );
+                const data = await response.json();
+                if (response.ok) {
+                    toast.success("Treinamento cadastrado!");
+                    setNewTrainingText("");
+                    setNewTrainingImgURL("");
+                    setTrainings([...trainings, data]);
+                } else {
+                    toast.error("Erro ao criar treinamento.");
                 }
-            );
-            setNewTrainingText("");
-            e.target.disabled = false;
-        } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
-        }
-    };
+                e.target.disabled = false;
+            } catch (error) {
+                console.error("Erro ao criar treinamento:", error);
+            }
+        };
 
     useEffect(() => {
         setNewTrainingText(transcript);
