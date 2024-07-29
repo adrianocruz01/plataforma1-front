@@ -15,7 +15,7 @@ const WebsiteTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=WEBSITE`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=WEBSITE`,
                 {
                     method: "GET",
                 }
@@ -41,7 +41,7 @@ const WebsiteTraining = () => {
         };
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {

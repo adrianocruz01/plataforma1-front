@@ -37,7 +37,7 @@ const Chat = ({
     const fetchChat = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/messages?page=1&pageSize=1000000000`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/messages?page=1&pageSize=1000000000`,
                 {
                     method: "GET",
                 }
@@ -52,7 +52,7 @@ const Chat = ({
     const enableHumanTalk = async () => {
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/${humanTalk ? "stop" : "start"}-human`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/${humanTalk ? "stop" : "start"}-human`,
                 {
                     method: "PUT",
                     headers: {
@@ -71,7 +71,7 @@ const Chat = ({
         if (!newMessage) return;
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/chat/${selectedChat.id}/send-message`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/send-message`,
                 {
                     method: "POST",
                     headers: {

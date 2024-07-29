@@ -38,7 +38,7 @@ const Nav = ({ page }) => {
     const fetchAssistant = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/agents/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?page=1&pageSize=10000`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/agents/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?page=1&pageSize=10000`,
                 {
                     method: "GET"
                 }
