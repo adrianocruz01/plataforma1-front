@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }) {
     return (
         <Layout>
             <Head>
-                <title>Zury AI</title>
+                <title>Plataforma Zury AI</title>
             </Head>
             <Component {...pageProps} />
         </Layout>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const Card = ({ href, title, src, isHoverCircle }) => {
+const Card = ({ href, title, src, isHoverCircle, target }) => {
     const [isHover, setIsHover] = useState(false);
 
     return (
@@ -10,8 +10,8 @@ const Card = ({ href, title, src, isHoverCircle }) => {
             href={href}
             className={`relative flex flex-col items-center animate-rotate-card ${
                 isHoverCircle ? "animate-pause" : ""
-            }
-            ${href ? "" : "grayscale"}`}
+            } ${href ? "" : "grayscale"}`}
+            target={target ?? "_self"}
         >
             <Image
                 src={src}
