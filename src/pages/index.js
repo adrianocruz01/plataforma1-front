@@ -13,6 +13,7 @@ import Card from "@/components/Card";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import HomeButton from "@/components/HomeButton";
 
 const HomePage = () => {
     const cards = [
@@ -57,8 +58,23 @@ const HomePage = () => {
             source: Marketing,
         },
     ];
-
+    const buttons = [
+        {
+            slug: "conexoes",
+            title: "Conectar com WhatsApp",
+            source: WhatsApp,
+        },
+        {
+            slug: "conversas",
+            title: "Ver conversas",
+            source: Conversas,
+        },
+    ];
     const [windowWidth, setWindowWidth] = useState(0);
+    const [isHover, setIsHover] = useState(false);
+    const [isHoverCircle, setIsHoverCircle] = useState(false);
+    const radius = 350;
+    const angleStep = (2 * Math.PI) / cards.length;
 
     useEffect(() => {
         const handleResize = () => {
@@ -78,8 +94,9 @@ const HomePage = () => {
             return {
                 transform: `translate(${x}px, ${y}px)`,
                 position: "absolute",
-                top: "calc(50% - 50px)",
-                left: "calc(50% - 50px)",
+                top: "calc(50% - 60px)",
+                left: "calc(50% - 60px)",
+                transition: "transform 1ms linear",
             };
         } else {
             return {
@@ -92,27 +109,15 @@ const HomePage = () => {
         }
     };
 
-    const radius = 300;
-    const angleStep = (2 * Math.PI) / cards.length;
-    const [isHover, setIsHover] = useState(false);
-
     return (
-        <div className="min-h-screen w-full bg-black flex flex-col md:flex-row">
-            <div className="flex md:flex-col justify-center items-center p-8 gap-5 h-full">
-                <Link href={"conexoes"}>
-                    <Image src={WhatsApp} width={60} height={60} className="" />
-                </Link>
-                <Link href={"conversas"}>
-                    <Image
-                        src={Conversas}
-                        width={60}
-                        height={60}
-                        className=""
-                    />
-                </Link>
+        <div className="min-h-screen w-full bg-black flex flex-col md:flex-row overflow-hidden">
+            <div className="flex md:flex-col justify-center md:items-center p-8 gap-5 h-full bg-slate-900 md:bg-transparent">
+                {buttons.map((button, index) => (
+                    <HomeButton button={button} key={index} />
+                ))}
             </div>
             <div className="relative h-full md:h-screen w-screen flex flex-col items-center justify-center">
-                <div className="bg-zury md:w-[500px] md:h-[500px] w-full h-full flex items-center justify-center rounded-full">
+                <div className="bg-zury md:w-[500px] md:h-[500px] w-full h-[350px] flex items-center justify-center rounded-full relative z-[1]">
                     <Link
                         href={"treinamentos?tab=0"}
                         onMouseEnter={() => setIsHover(true)}
@@ -127,15 +132,21 @@ const HomePage = () => {
                             />
                         </div>
                         <span
-                            className={`absolute -bottom-5 text-md text-white font-semibold text-center max-w-24 ${
-                                isHover ? "block" : "hidden"
+                            className={`absolute -bottom-5 text-md block text-white font-semibold text-center w-max ${
+                                isHover ? "md:block" : "md:hidden"
                             }`}
                         >
-                            Treinar Zury
+                            Ensinar a Zury
                         </span>
                     </Link>
                 </div>
-                <div className="flex flex-wrap gap-10 justify-center px-7">
+                <div
+                    onMouseEnter={() => setIsHoverCircle(true)}
+                    onMouseLeave={() => setIsHoverCircle(false)}
+                    className={`md:absolute mt-8 md:mt-0 flex flex-wrap md:block gap-10 justify-center px-7 md:px-0 md:h-[700px] md:w-[700px] animate-rotate-slow ${
+                        isHoverCircle ? "animate-pause" : ""
+                    }`}
+                >
                     {cards.map((card, index) => {
                         const angle = angleStep * index - Math.PI / 2;
                         const x = Number((radius * Math.cos(angle)).toFixed(8));
@@ -146,6 +157,9 @@ const HomePage = () => {
                                     href={card.slug}
                                     title={card.title}
                                     src={card.source}
+                                    onMouseEnter={() => setIsHover(true)}
+                                    onMouseLeave={() => setIsHover(false)}
+                                    isHoverCircle={isHoverCircle}
                                 />
                             </div>
                         );

@@ -61,16 +61,22 @@ body::before {
 }
 
 .bg-zury {
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("../assets/images/bg-zury.gif");
+    background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.65),
+            rgba(0, 0, 0, 0.65)
+        ),
+        url("../assets/images/bg-zury.gif");
     background-size: cover;
     background-position: center;
 }
 
 @keyframes pulse-slow {
-    0%, 100% {
-        transform: scale(1.0);
+    0%,
+    100% {
+        transform: scale(1);
     }
-    
+
     50% {
         transform: scale(1.05);
     }
@@ -78,4 +84,36 @@ body::before {
 
 .animate-pulse-slow {
     animation: pulse-slow 6s ease-in-out infinite;
+}
+
+@media screen and (min-width: 768px) {
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animate-rotate-slow {
+        animation: rotate 600s linear infinite;
+    }
+
+    .animate-pause {
+        animation-play-state: paused !important;
+    }
+
+    @keyframes rotate-card {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(-360deg);
+        }
+    }
+
+    .animate-rotate-card {
+        animation: rotate-card 600s linear infinite;
+    }
 }
