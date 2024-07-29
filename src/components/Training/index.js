@@ -66,7 +66,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
             }
 
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/training/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -98,7 +98,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
         setEditMenu(false);
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/training/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
                 {
                     method: "DELETE",
                 }

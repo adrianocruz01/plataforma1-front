@@ -22,7 +22,7 @@ const AudioTraining = () => {
                 };
     
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_IBASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
+                    `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                     {
                         method: "POST",
                         headers: {

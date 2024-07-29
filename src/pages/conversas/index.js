@@ -19,7 +19,7 @@ const ChatsPage = () => {
     const fetchConversations = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_IBASEURL}/chats/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?agentId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&page=1&pageSize=1000000000`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/workspace/${process.env.NEXT_PUBLIC_WORKSPACE_ID}?agentId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&page=1&pageSize=1000000000`,
                 {
                     method: "GET",
                 }
