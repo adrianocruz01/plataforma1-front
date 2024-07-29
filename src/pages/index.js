@@ -31,6 +31,7 @@ const HomePage = () => {
             slug: "https://crm.zury.ai/login",
             title: "Plataforma CRM",
             source: CRM,
+            target: "_blank"
         },
         {
             slug: "",
@@ -155,6 +156,7 @@ const HomePage = () => {
                             <div key={index} style={getStyle(x, y)}>
                                 <Card
                                     href={card.slug}
+                                    target={card.target}
                                     title={card.title}
                                     src={card.source}
                                     onMouseEnter={() => setIsHover(true)}
