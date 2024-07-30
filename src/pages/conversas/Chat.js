@@ -83,6 +83,7 @@ const Chat = ({
                 }
             );
             fetchChat();
+            fetchConversations();
             setNewMessage("");
         } catch (error) {
             console.error("Erro ao enviar mensagem:", error);
