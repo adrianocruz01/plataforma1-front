@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const TextTraining = () => {
     const [trainings, setTrainings] = useState([]);
