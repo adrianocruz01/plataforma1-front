@@ -18,7 +18,7 @@ const Chat = ({
     const [humanTalk, setHumanTalk] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const [rows, setRows] = useState(1);
-    const [loading, setLoading] = useState(false); // Estado de carregamento
+    const [loading, setLoading] = useState(false);
     const pollingRef = useRef(null);
 
     const handleError = () => {
@@ -43,7 +43,7 @@ const Chat = ({
     }, [selectedChat?.id]);
 
     const startPolling = useCallback(() => {
-        stopPolling(); // Garante que qualquer polling anterior seja parado
+        stopPolling();
         pollingRef.current = setInterval(fetchChat, 1000);
     }, [fetchChat]);
 
@@ -56,25 +56,25 @@ const Chat = ({
 
     useEffect(() => {
         const initializeChat = async () => {
-            setLoading(true); // Inicia o carregamento
-            setChat([]); // Limpa o chat ao mudar de chat
+            setLoading(true); 
+            setChat([]);
             setSrcImage(selectedChat.picture);
             setHumanTalk(selectedChat.humanTalk);
-            await fetchChat(); // Busca o chat imediatamente na troca
-            setLoading(false); // Termina o carregamento
-            startPolling(); // Inicia o polling após o carregamento inicial
+            await fetchChat();
+            setLoading(false); 
+            startPolling();
         };
 
         initializeChat();
 
-        return () => stopPolling(); // Limpa o polling na desmontagem do componente ou na troca de chat
+        return () => stopPolling();
     }, [selectedChat, fetchChat, startPolling]);
 
     useEffect(() => {
-        if (containerRef.current) {
+        if (containerRef.current && !loading) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-    }, [chat]);
+    }, [loading]);
 
     const enableHumanTalk = async () => {
         try {
