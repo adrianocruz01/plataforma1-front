@@ -26,10 +26,10 @@ const Chat = ({
     };
 
     const fetchChat = useCallback(async () => {
-        if (selectedChat.id) {
+        if (selectedChat?.id) {
             try {
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/messages?page=1&pageSize=1000000000`,
+                    `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat?.id}/messages?page=1&pageSize=1000000000`,
                     {
                         method: "GET",
                     }
@@ -40,7 +40,7 @@ const Chat = ({
                 console.error("Erro ao buscar chat:", error);
             }
         }
-    }, [selectedChat.id]);
+    }, [selectedChat?.id]);
 
     const startPolling = useCallback(() => {
         stopPolling(); // Garante que qualquer polling anterior seja parado
@@ -79,7 +79,7 @@ const Chat = ({
     const enableHumanTalk = async () => {
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/${humanTalk ? "stop" : "start"}-human`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat?.id}/${humanTalk ? "stop" : "start"}-human`,
                 {
                     method: "PUT",
                     headers: {
@@ -98,7 +98,7 @@ const Chat = ({
         if (!newMessage) return;
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat.id}/send-message`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat?.id}/send-message`,
                 {
                     method: "POST",
                     headers: {
