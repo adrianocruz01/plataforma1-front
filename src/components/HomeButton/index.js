@@ -16,6 +16,7 @@ const HomeButton = ({ button }) => {
                 <Image
                     src={button.source}
                     fill={true}
+                    alt=""
                     className="hover:shadow-lg hover:shadow-cyan-800 rounded-xl transition-shadow"
                 />
             </div>

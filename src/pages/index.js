@@ -130,6 +130,7 @@ const HomePage = () => {
                                 src={Zury}
                                 fill={true}
                                 className="animate-pulse-slow"
+                                alt=""
                             />
                         </div>
                         <span
