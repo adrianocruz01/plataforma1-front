@@ -72,17 +72,20 @@ const HomePage = () => {
         },
     ];
     const [windowWidth, setWindowWidth] = useState(0);
+    const [windowHeight, setWindowHeight] = useState(0);
     const [isHover, setIsHover] = useState(false);
     const [isHoverCircle, setIsHoverCircle] = useState(false);
-    const radius = 350;
+    const radius = windowHeight >= 900 ? 325 : 250;
+    const zuryBGRadius = windowHeight >= 900 ? 450 : 300;
     const angleStep = (2 * Math.PI) / cards.length;
 
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
+            setWindowHeight(window.innerHeight);
         };
 
-        handleResize(); // Set initial width
+        handleResize();
         window.addEventListener("resize", handleResize);
 
         return () => {
@@ -91,7 +94,7 @@ const HomePage = () => {
     }, []);
 
     const getStyle = (x, y) => {
-        if (windowWidth >= 768) {
+        if (windowWidth >= 992) {
             return {
                 transform: `translate(${x}px, ${y}px)`,
                 position: "absolute",
@@ -111,21 +114,23 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-black flex flex-col md:flex-row overflow-hidden">
-            <div className="flex md:flex-col justify-center md:items-center p-8 gap-5 h-full bg-slate-900 md:bg-transparent">
+        <div className="min-h-screen w-full bg-black flex flex-col lg:flex-row overflow-hidden relative">
+            <div className="flex lg:flex-col justify-center lg:items-center p-8 gap-5 bg-slate-900 lg:bg-transparent lg:absolute z-10">
                 {buttons.map((button, index) => (
                     <HomeButton button={button} key={index} />
                 ))}
             </div>
-            <div className="relative h-full md:h-screen w-screen flex flex-col items-center justify-center">
-                <div className="bg-zury md:w-[450px] md:h-[450px] w-full h-[350px] flex items-center justify-center rounded-full relative z-[1]">
+            <div className="relative h-full lg:h-screen w-screen flex flex-col items-center justify-center">
+                <div className={`bg-zury ${windowHeight >= 900 ? "lg:w-[450px] lg:h-[450px]" : "lg:w-[300px] lg:h-[300px]"} w-[350px] h-[350px] flex items-center justify-center rounded-full relative z-[1]`}>
                     <Link
                         href={"treinamentos?tab=0"}
                         onMouseEnter={() => setIsHover(true)}
                         onMouseLeave={() => setIsHover(false)}
+                        onTouchStart={() => setIsHover(true)}
+                        onTouchEnd={() => setIsHover(false)}
                         className="flex flex-col items-center justify-center relative"
                     >
-                        <div className="relative w-[250px] h-[250px] hover:w-[300px] hover:h-[300px] transition-all">
+                        <div className={`relative ${windowHeight >= 900 ? "w-[250px] h-[250px]": "w-[200px] h-[200px]"} hover:w-[300px] hover:h-[300px] transition-all`}>
                             <Image
                                 src={Zury}
                                 fill={true}
@@ -135,7 +140,7 @@ const HomePage = () => {
                         </div>
                         <span
                             className={`absolute -bottom-5 text-md block text-white font-semibold text-center w-max ${
-                                isHover ? "md:block" : "md:hidden"
+                                isHover ? "lg:block" : "lg:hidden"
                             }`}
                         >
                             Ensinar a Zury
@@ -145,7 +150,9 @@ const HomePage = () => {
                 <div
                     onMouseEnter={() => setIsHoverCircle(true)}
                     onMouseLeave={() => setIsHoverCircle(false)}
-                    className={`md:absolute mt-8 md:mt-0 flex flex-wrap md:block gap-10 justify-center px-7 md:px-0 md:h-[700px] md:w-[700px] animate-rotate-slow ${
+                    onTouchStart={() => setIsHoverCircle(true)}
+                    onTouchEnd={() => setIsHoverCircle(false)}
+                    className={`lg:absolute mt-8 lg:mt-0 flex flex-wrap lg:block gap-10 justify-center px-7 lg:px-0 lg:h-[700px] lg:w-[700px] animate-rotate-slow ${
                         isHoverCircle ? "animate-pause" : ""
                     }`}
                 >
@@ -162,7 +169,10 @@ const HomePage = () => {
                                     src={card.source}
                                     onMouseEnter={() => setIsHover(true)}
                                     onMouseLeave={() => setIsHover(false)}
+                                    onTouchStart={() => setIsHover(true)}
+                                    onTouchEnd={() => setIsHover(false)}
                                     isHoverCircle={isHoverCircle}
+                                    cardSize={windowHeight >= 900 ? 120 : 100}
                                 />
                             </div>
                         );
