@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const Card = ({ href, title, src, isHoverCircle, target }) => {
+const Card = ({ href, title, src, isHoverCircle, target, cardSize }) => {
     const [isHover, setIsHover] = useState(false);
 
     return (
@@ -15,16 +15,18 @@ const Card = ({ href, title, src, isHoverCircle, target }) => {
         >
             <Image
                 src={src}
-                width={120}
-                height={120}
+                width={cardSize}
+                height={cardSize}
                 className="rounded-[30px]"
                 alt="icon"
                 onMouseEnter={() => setIsHover(true)}
                 onMouseLeave={() => setIsHover(false)}
+                onTouchStart={() => setIsHover(true)}
+                onTouchEnd={() => setIsHover(false)}
             />
             <div
-                className={`md:absolute md:top-full mt-2 text-sm text-white block font-semibold text-center overflow-hidden max-w-24 transition-all duration-300 ease-in-out ${
-                    isHover ? "md:max-h-24" : "md:max-h-0"
+                className={`lg:absolute lg:top-full mt-2 text-sm text-white block font-semibold text-center overflow-hidden max-w-24 transition-all duration-300 ease-in-out ${
+                    isHover ? "lg:max-h-24" : "lg:max-h-0"
                 }`}
             >
                 {title}

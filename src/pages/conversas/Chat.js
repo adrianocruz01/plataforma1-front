@@ -3,8 +3,9 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import Profile from "@/assets/images/profile.png";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
+import Switch from "@mui/material/Switch";
 
 const Chat = ({
     selectedChat,
@@ -18,7 +19,7 @@ const Chat = ({
     const [humanTalk, setHumanTalk] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const [rows, setRows] = useState(1);
-    const [loading, setLoading] = useState(false); // Estado de carregamento
+    const [loading, setLoading] = useState(false);
     const pollingRef = useRef(null);
 
     const handleError = () => {
@@ -43,7 +44,7 @@ const Chat = ({
     }, [selectedChat?.id]);
 
     const startPolling = useCallback(() => {
-        stopPolling(); // Garante que qualquer polling anterior seja parado
+        stopPolling();
         pollingRef.current = setInterval(fetchChat, 1000);
     }, [fetchChat]);
 
@@ -56,30 +57,32 @@ const Chat = ({
 
     useEffect(() => {
         const initializeChat = async () => {
-            setLoading(true); // Inicia o carregamento
-            setChat([]); // Limpa o chat ao mudar de chat
+            setLoading(true);
+            setChat([]);
             setSrcImage(selectedChat.picture);
             setHumanTalk(selectedChat.humanTalk);
-            await fetchChat(); // Busca o chat imediatamente na troca
-            setLoading(false); // Termina o carregamento
-            startPolling(); // Inicia o polling após o carregamento inicial
+            await fetchChat();
+            setLoading(false);
+            startPolling();
         };
 
         initializeChat();
 
-        return () => stopPolling(); // Limpa o polling na desmontagem do componente ou na troca de chat
+        return () => stopPolling();
     }, [selectedChat, fetchChat, startPolling]);
 
     useEffect(() => {
-        if (containerRef.current) {
+        if (containerRef.current && !loading) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-    }, [chat]);
+    }, [loading]);
 
     const enableHumanTalk = async () => {
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${selectedChat?.id}/${humanTalk ? "stop" : "start"}-human`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/chats/chat/${
+                    selectedChat?.id
+                }/${humanTalk ? "stop" : "start"}-human`,
                 {
                     method: "PUT",
                     headers: {
@@ -149,42 +152,46 @@ const Chat = ({
                 chatIsOpen ? "flex" : "hidden"
             }`}
         >
-            <div className="px-4 pb-4 flex gap-4 border-b items-center">
-                <button
-                    onClick={() => setChatIsOpen(false)}
-                    className="lg:hidden block -mr-3"
-                >
-                    <ArrowBackIosNewOutlinedIcon fontSize="small" />
-                </button>
-                <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">
-                    <Image
-                        src={srcImage ? srcImage : Profile}
-                        fill={true}
-                        className="rounded-full"
-                        alt="profile"
-                        onError={handleError}
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <div className="md:text-xl text-md font-bold">
-                        {selectedChat?.name ?? "Desconhecido"}
+            <div className="px-4 pb-4 flex flex-wrap flex-col lg:flex-row gap-4 border-b items-center">
+                <div className="flex self-start gap-4">
+                    <button
+                        onClick={() => setChatIsOpen(false)}
+                        className="lg:hidden block -mr-3"
+                    >
+                        <ArrowBackIosNewOutlinedIcon fontSize="small" />
+                    </button>
+                    <div className="md:h-14 md:w-14 w-11 h-11 min-h-11 min-w-11 relative">
+                        <Image
+                            src={srcImage ? srcImage : Profile}
+                            fill={true}
+                            className="rounded-full"
+                            alt="profile"
+                            onError={handleError}
+                        />
                     </div>
-                    <div className="md:text-sm text-xs">
-                        {humanTalk
-                            ? "Sendo atendido por um humano"
-                            : "Sendo atendido pela Zury"}
+                    <div className="flex flex-col">
+                        <div className="md:text-xl text-md font-bold">
+                            {selectedChat?.name ?? "Desconhecido"}
+                        </div>
+                        <div className="md:text-sm text-xs">
+                            {humanTalk
+                                ? "Sendo atendido por um humano"
+                                : "Sendo atendido pela Zury"}
+                        </div>
                     </div>
                 </div>
-                <button
-                    onClick={handleHumanTalk}
-                    className={`ml-auto text-xs font-light p-2 rounded-full text-white ${
-                        humanTalk ? "bg-teal-600" : "bg-amber-600"
-                    }`}
-                >
-                    {humanTalk
-                        ? "Voltar atendimento para a Zury"
-                        : "Assumir a conversa"}
-                </button>
+                <div className="flex flex-col lg:mx-auto items-center font-medium text-sm">
+                    <div>Atendimento Zury</div>
+                    <div className="flex items-center">
+                        <label className="text-xs">Desativar</label>
+                        <Switch
+                            onChange={handleHumanTalk}
+                            checked={!humanTalk}
+                            color="warning"
+                        />
+                        <label className="text-xs">Ativar</label>
+                    </div>
+                </div>
             </div>
             <div
                 ref={containerRef}
@@ -204,7 +211,11 @@ const Chat = ({
                     </div>
                 )}
             </div>
-            <div className={`w-full flex gap-2 p-4 ${humanTalk ? "block" : "hidden"}`}>
+            <div
+                className={`w-full hidden gap-2 p-4 ${
+                    humanTalk ? "block" : "hidden"
+                }`}
+            >
                 <textarea
                     wrap="hard"
                     rows={rows}
@@ -215,7 +226,10 @@ const Chat = ({
                     placeholder="Escreva a mensagem e tecle ENTER"
                     className="rounded-3xl p-3 focus-visible:outline-none border border-neutral-300 focus-visible:border-neutral-500 w-full scrollbar-hidden"
                 />
-                <button onClick={() => sendMessage(newMessage)} className="md:hidden block min-w-[50px] rounded-full bg-sky-700 text-white">
+                <button
+                    onClick={() => sendMessage(newMessage)}
+                    className="md:hidden block min-w-[50px] rounded-full bg-sky-700 text-white"
+                >
                     <SendOutlinedIcon />
                 </button>
             </div>

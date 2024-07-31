@@ -31,7 +31,7 @@ const Connection = () => {
                     }
                     return true;
                 });
-                setQrCode("Seu WhatsApp já está conectado à Z-API.");
+                setQrCode("Seu WhatsApp já está conectado à Zury.");
             } else if (data.qrCodeBase64) {
                 setIsConnected(false);
                 setQrCode(`data:image/png;base64,${data.qrCodeBase64}`);

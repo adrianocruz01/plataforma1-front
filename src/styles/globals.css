@@ -94,7 +94,7 @@ body::before {
     animation: pulse-slow 6s ease-in-out infinite;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
     @keyframes rotate {
         from {
             transform: rotate(0deg);

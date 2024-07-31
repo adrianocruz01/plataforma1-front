@@ -8,9 +8,11 @@ const HomeButton = ({ button }) => {
     return (
         <Link
             href={button.slug}
-            className="relative flex items-center md:justify-center md:flex-row flex-col gap-2 h-full"
+            className="relative flex items-center lg:justify-center lg:flex-row flex-col gap-2 h-full"
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
+            onTouchStart={() => setIsHover(true)}
+            onTouchEnd={() => setIsHover(false)}
         >
             <div className="relative md:h-[60px] md:w-[60px] h-10 w-10">
                 <Image
@@ -21,8 +23,8 @@ const HomeButton = ({ button }) => {
                 />
             </div>
             <div
-                className={`text-white md:text-sm text-xs max-w-20 h-full md:h-auto md:absolute text-center md:text-left md:text-nowrap md:left-[70px] md:overflow-hidden transition-all duration-300 ease-in-out ${
-                    isHover ? "md:max-w-96" : "md:max-w-0"
+                className={`text-white lg:text-sm text-xs max-w-20 h-full lg:h-auto lg:absolute text-center lg:text-left lg:text-nowrap lg:left-[70px] lg:overflow-hidden transition-all duration-300 ease-in-out ${
+                    isHover ? "lg:max-w-96" : "lg:max-w-0"
                 }`}
             >
                 {button.title}
