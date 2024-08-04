@@ -32,12 +32,11 @@ const ChatsPage = () => {
     };
 
     return (
-        <div className="flex min-h-screen w-full flex-col md:flex-row">
-            <Nav page="conversas" />
-            <div className="px-6 md:px-10 w-full">
-                <h1 className="text-3xl font-bold mt-16 mb-8">Conversas</h1>
+        <div className="flex min-h-screen w-full flex-col md:flex-row lg:pl-20">
+            <div className="px-4 md:px-10 w-full">
+                <h1 className="text-3xl font-bold md:mt-16 mt-12 ml-4 mb-8 audiowide text-white">Conversas</h1>
                 <div className="max-w-5xl">
-                    <div className={`bg-white rounded-2xl shadow-lg md:p-8 py-5 ${chatIsOpen ? "pl-0" : "pl-5"} flex max-h-[calc(100vh-168px)] mb-9`}>
+                    <div className={`bg-neutral-700 rounded-2xl shadow-lg md:p-8 py-5 ${chatIsOpen ? "pl-0" : "pl-5"} flex max-h-[calc(100vh-168px)] mb-9`}>
                         <Conversations
                             onSelectedChat={handleChatSelect}
                             conversations={conversations}

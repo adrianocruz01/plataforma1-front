@@ -55,7 +55,7 @@ const Connection = () => {
                 <div className="flex flex-col">
                     <label
                         htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
+                        className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                     >
                         Conecte seu WhatsApp com a inteligência da Zury
                     </label>
@@ -63,13 +63,13 @@ const Connection = () => {
                 <div className="flex flex-wrap flex-col">
                     {error && <p className="text-red-600 mx-auto">{error}</p>}
                     {qrCode && (
-                        <div className="mx-auto">
+                        <div className="mx-auto gradient-container rounded-xl">
                             {!isConnected ? (
                                 <Image
                                     src={qrCode}
                                     width={300}
                                     height={300}
-                                    className="border-gray-950 border rounded-xl shadow-xl"
+                                    className="p-px rounded-xl shadow-xl"
                                     alt="WhatsApp conectado"
                                 />
                             ) : (
@@ -84,15 +84,15 @@ const Connection = () => {
                             )}
                         </div>
                     )}
-                    <div className="flex flex-col mx-auto sm:w-fit gap-3 mt-10 sm:mb-0">
+                    <div className="flex flex-col mx-auto sm:w-fit gap-6 mt-10 sm:mb-0">
                         <button
-                            className="px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow"
+                            className="px-3 py-2 button-gradient text-white rounded-md before:rounded-md font-medium shadow"
                             onClick={fetchQrCode}
                         >
                             Atualizar QR Code
                         </button>
                         <Link
-                            className="px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow text-center"
+                            className="px-3 py-2 button-gradient text-white rounded-md before:rounded-md font-medium shadow text-center"
                             onClick={fetchQrCode}
                             target="_blank"
                             href={"https://crm.zury.ai/connections"}

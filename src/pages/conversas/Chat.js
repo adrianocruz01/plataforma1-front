@@ -152,11 +152,11 @@ const Chat = ({
                 chatIsOpen ? "flex" : "hidden"
             }`}
         >
-            <div className="px-4 pb-4 flex flex-wrap flex-col lg:flex-row gap-4 border-b items-center">
+            <div className="px-4 pb-4 flex flex-wrap flex-col lg:flex-row gap-4 items-center">
                 <div className="flex self-start gap-4">
                     <button
                         onClick={() => setChatIsOpen(false)}
-                        className="lg:hidden block -mr-3"
+                        className="lg:hidden block -mr-3 text-white"
                     >
                         <ArrowBackIosNewOutlinedIcon fontSize="small" />
                     </button>
@@ -170,26 +170,26 @@ const Chat = ({
                         />
                     </div>
                     <div className="flex flex-col">
-                        <div className="md:text-xl text-md font-bold">
+                        <div className="md:text-xl text-md font-bold text-neutral-50">
                             {selectedChat?.name ?? "Desconhecido"}
                         </div>
-                        <div className="md:text-sm text-xs">
+                        <div className="md:text-sm text-xs text-neutral-100">
                             {humanTalk
                                 ? "Sendo atendido por um humano"
                                 : "Sendo atendido pela Zury"}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col lg:mx-auto items-center font-medium text-sm">
-                    <div>Atendimento Zury</div>
+                <div className="flex flex-col lg:ml-auto items-center font-medium text-sm">
+                    <div className="text-neutral-50">Atendimento Zury</div>
                     <div className="flex items-center">
-                        <label className="text-xs">Desativar</label>
+                        <label className="text-xs text-neutral-100">Desativar</label>
                         <Switch
                             onChange={handleHumanTalk}
                             checked={!humanTalk}
                             color="warning"
                         />
-                        <label className="text-xs">Ativar</label>
+                        <label className="text-xs text-neutral-100">Ativar</label>
                     </div>
                 </div>
             </div>

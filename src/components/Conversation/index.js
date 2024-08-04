@@ -22,10 +22,10 @@ const Conversation = ({ src, name, lastMessage, type }) => {
                 />
             </div>
             <div className="max-w-[calc(100%-56px)]">
-                <div className="md:text-xl text-md font-bold md:max-w-60 max-w-full whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
+                <div className="md:text-xl text-neutral-50 text-md font-bold md:max-w-60 max-w-full whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
                     {name ?? "Desconhecido"}
                 </div>
-                <div className="font-light md:max-w-64 max-w-full text-sm whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
+                <div className="font-light text-neutral-100 md:max-w-64 max-w-full text-sm whitespace-nowrap text-ellipsis min-w-0 overflow-hidden">
                     {type === "TEXT" ? (
                         lastMessage
                     ) : type === "AUDIO" ? (

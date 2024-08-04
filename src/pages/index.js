@@ -1,4 +1,3 @@
-import WhatsApp from "@/assets/images/icone-conexao-wpp.png";
 import Marketing from "@/assets/images/icone-marketing.png";
 import CRM from "@/assets/images/icone-grafico-2.png";
 import MidiasSociais from "@/assets/images/icone-ig-fb.png";
@@ -7,13 +6,11 @@ import Personalidade from "@/assets/images/icone-comportamento.png";
 import SMS from "@/assets/images/icone-sms.png";
 import TeConvida from "@/assets/images/icone-teconvida.png";
 import Zury from "@/assets/images/botao-zury.png";
-import Conversas from "@/assets/images/icone-mensagens.png";
 import Biblioteca from "@/assets/images/icone-biblioteca.png";
 import Card from "@/components/Card";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import HomeButton from "@/components/HomeButton";
 
 const HomePage = () => {
     const cards = [
@@ -31,7 +28,7 @@ const HomePage = () => {
             slug: "https://crm.zury.ai/login",
             title: "Plataforma CRM",
             source: CRM,
-            target: "_blank"
+            target: "_blank",
         },
         {
             slug: "",
@@ -59,24 +56,11 @@ const HomePage = () => {
             source: Marketing,
         },
     ];
-    const buttons = [
-        {
-            slug: "conexoes",
-            title: "Conectar com WhatsApp",
-            source: WhatsApp,
-        },
-        {
-            slug: "conversas",
-            title: "Ver conversas",
-            source: Conversas,
-        },
-    ];
     const [windowWidth, setWindowWidth] = useState(0);
     const [windowHeight, setWindowHeight] = useState(0);
     const [isHover, setIsHover] = useState(false);
     const [isHoverCircle, setIsHoverCircle] = useState(false);
     const radius = windowHeight >= 900 ? 325 : 250;
-    const zuryBGRadius = windowHeight >= 900 ? 450 : 300;
     const angleStep = (2 * Math.PI) / cards.length;
 
     useEffect(() => {
@@ -94,7 +78,7 @@ const HomePage = () => {
     }, []);
 
     const getStyle = (x, y) => {
-        if (windowWidth >= 992) {
+        if (windowWidth >= 1024) {
             return {
                 transform: `translate(${x}px, ${y}px)`,
                 position: "absolute",
@@ -114,14 +98,20 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-black flex flex-col lg:flex-row overflow-hidden relative">
-            <div className="flex lg:flex-col justify-center lg:items-center p-8 gap-5 bg-slate-900 lg:bg-transparent lg:absolute z-10">
-                {buttons.map((button, index) => (
-                    <HomeButton button={button} key={index} />
-                ))}
-            </div>
+        <div className="min-h-screen w-full lg:flex flex-col lg:flex-row overflow-hidden relative pt-10">
             <div className="relative h-full lg:h-screen w-screen flex flex-col items-center justify-center">
-                <div className={`bg-zury ${windowHeight >= 900 ? "lg:w-[450px] lg:h-[450px]" : "lg:w-[300px] lg:h-[300px]"} w-[350px] h-[350px] flex items-center justify-center rounded-full relative z-[1]`}>
+                <div
+                    className={`relative ${
+                        windowHeight >= 900
+                            ? "lg:w-[450px] lg:h-[450px]"
+                            : "lg:w-[300px] lg:h-[300px]"
+                    } w-[350px] h-[350px] flex items-center justify-center rounded-full relative z-[1]`}
+                >
+                    <div className="ripple border-2 border-cyan-700 rounded-full w-48 h-48 absolute opacity-0"></div>
+                    <div className="ripple border-2 border-cyan-700 rounded-full w-48 h-48 absolute opacity-0"></div>
+                    <div className="ripple border-2 border-cyan-700 rounded-full w-48 h-48 absolute opacity-0"></div>
+                    <div className="ripple border-2 border-cyan-700 rounded-full w-48 h-48 absolute opacity-0"></div>
+                    <div className="ripple border-2 border-cyan-700 rounded-full w-48 h-48 absolute opacity-0"></div>
                     <Link
                         href={"treinamentos?tab=0"}
                         onMouseEnter={() => setIsHover(true)}
@@ -130,7 +120,13 @@ const HomePage = () => {
                         onTouchEnd={() => setIsHover(false)}
                         className="flex flex-col items-center justify-center relative"
                     >
-                        <div className={`relative ${windowHeight >= 900 ? "w-[250px] h-[250px]": "w-[200px] h-[200px]"} hover:w-[300px] hover:h-[300px] transition-all`}>
+                        <div
+                            className={`relative ${
+                                windowHeight >= 900
+                                    ? "w-[250px] h-[250px]"
+                                    : "w-[200px] h-[200px]"
+                            } hover:w-[300px] hover:h-[300px] transition-all`}
+                        >
                             <Image
                                 src={Zury}
                                 fill={true}

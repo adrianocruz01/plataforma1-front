@@ -1,32 +1,40 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const useSpeechRecognition = () => {
     const [transcript, setTranscript] = useState("");
     const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef(null);
 
     const startRecognition = () => {
         if ("webkitSpeechRecognition" in window) {
             const recognition = new webkitSpeechRecognition();
             recognition.lang = "pt-BR";
-            recognition.continuous = false;
-            
-            recognition.onstart = function() {
+            recognition.continuous = true;
+            recognition.iterimResults = true;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
                 setIsListening(true);
-            }
-            
-            recognition.onresult = function (event) {
-                const transcript = event.results[0][0].transcript;
+            };
+
+            recognition.onresult = (event) => {
+                const results = event.results;
+                const latestResult = results[results.length - 1];
+                const transcript = Array.from(latestResult)
+                    .map(result => result.transcript)
+                    .join("");
                 setTranscript(transcript);
             };
-            
-            recognition.onerror = function (event) {
+
+            recognition.onerror = (event) => {
                 console.error("Erro ao reconhecer fala:", event.error);
             };
-            
-            recognition.onend = function() {
+
+            recognition.onend = () => {
                 setIsListening(false);
-            }
-            
+            };
+
+            recognitionRef.current = recognition;
             recognition.start();
         } else {
             console.error(
@@ -35,7 +43,15 @@ const useSpeechRecognition = () => {
         }
     };
 
-    return { startRecognition, transcript, isListening };
+    const stopRecognition = () => {
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
+            recognitionRef.current = null;
+            setIsListening(false);
+        }
+    };
+
+    return { startRecognition, stopRecognition, transcript, isListening };
 };
 
 export default useSpeechRecognition;
