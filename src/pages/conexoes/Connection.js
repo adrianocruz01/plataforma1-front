@@ -69,7 +69,7 @@ const Connection = () => {
                                     src={qrCode}
                                     width={300}
                                     height={300}
-                                    className="p-2 rounded-xl shadow-xl"
+                                    className="p-px rounded-xl shadow-xl"
                                     alt="WhatsApp conectado"
                                 />
                             ) : (
