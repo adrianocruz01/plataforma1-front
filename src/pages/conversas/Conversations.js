@@ -49,7 +49,7 @@ const Conversations = ({ onSelectedChat, conversations, chatIsOpen, setChatIsOpe
         >
             {Object.keys(groupedConversations).map((date) => (
                 <div key={date} className="mb-6">
-                    <h2 className="text-md font-medium mb-2">
+                    <h2 className="text-md font-medium mb-2 text-neutral-200">
                         {getDateLabel(date)}
                     </h2>
                     <div className="flex gap-5 flex-col w-full">

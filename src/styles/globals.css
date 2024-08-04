@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+
 :root {
     --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 214, 219, 220;
     --background-end-rgb: 255, 255, 255;
+}
+
+body {
+    background-color: #262626;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,25 +26,6 @@
     .text-balance {
         text-wrap: balance;
     }
-}
-
-body {
-    position: relative;
-    min-height: 100%;
-}
-
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("../assets/images/bg.gif");
-    background-repeat: repeat;
-
-    opacity: 0.1;
-    z-index: -1;
 }
 
 .overflow-wrap-anywhere {
@@ -64,9 +51,9 @@ body::before {
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {
-      display: none;
+        display: none;
     }
-  }
+}
 
 .bg-zury {
     background-image: linear-gradient(
@@ -94,7 +81,7 @@ body::before {
     animation: pulse-slow 6s ease-in-out infinite;
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1024px) {
     @keyframes rotate {
         from {
             transform: rotate(0deg);
@@ -124,4 +111,210 @@ body::before {
     .animate-rotate-card {
         animation: rotate-card 600s linear infinite;
     }
+}
+
+.buttons-box {
+    box-shadow: -12px -12px 24px #1e1e1e, 12px 12px 24px #2e2e2e;
+    background: linear-gradient(#262626, #262626) padding-box,
+        linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9) border-box;
+    border-bottom: 1px solid transparent;
+    box-sizing: border-box;
+    background-size: 200% 100%;
+    animation: gradient 5s ease infinite;
+}
+
+@media screen and (min-width: 1024px) {
+    .buttons-box {
+        background: transparent;
+        box-shadow: none;
+    }
+}
+
+.ripple {
+    animation: rippleAnimation 16s infinite;
+}
+
+.ripple:nth-child(2) {
+    animation-delay: 4s;
+}
+
+.ripple:nth-child(3) {
+    animation-delay: 8s;
+}
+
+.ripple:nth-child(4) {
+    animation-delay: 12s;
+}
+
+.ripple:nth-child(5) {
+    animation-delay: 16s;
+}
+
+@keyframes rippleAnimation {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    20% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 0;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    @keyframes rippleAnimation {
+        0% {
+            transform: scale(0.5);
+            opacity: 1;
+        }
+        20% {
+            opacity: 0;
+        }
+        40% {
+            opacity: 1;
+        }
+        60% {
+            opacity: 0;
+        }
+        80% {
+            opacity: 1;
+        }
+        100% {
+            transform: scale(2.5);
+            opacity: 0;
+        }
+    }
+}
+
+.audiowide {
+    font-family: "Audiowide", sans-serif;
+    font-style: normal;
+}
+
+.gradient-container {
+    background: linear-gradient(#262626, #262626) padding-box,
+        linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9) border-box;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    background-size: 200% 100%;
+    animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .gradient-sm-container {
+        background: linear-gradient(#262626, #262626) padding-box,
+            linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9)
+                border-box;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        background-size: 200% 100%;
+        animation: gradient 5s ease infinite;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .gradient-md-container {
+        background: linear-gradient(#262626, #262626) padding-box,
+            linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9)
+                border-box;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        background-size: 200% 100%;
+        animation: gradient 5s ease infinite;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .gradient-lg-container {
+        background: linear-gradient(#262626, #262626) padding-box,
+            linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9)
+                border-box;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        background-size: 200% 100%;
+        animation: gradient 5s ease infinite;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .gradient-xl-container {
+        background: linear-gradient(#262626, #262626) padding-box,
+            linear-gradient(145deg, transparent 40%, #22d3ee, #e879f9)
+                border-box;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        background-size: 200% 100%;
+        animation: gradient 5s ease infinite;
+    }
+}
+
+.button-gradient {
+    text-decoration: none;
+    position: relative;
+    border: none;
+    background: linear-gradient(90deg, #22d3ee, #e879f9, #22d3ee);
+    background-size: 300%;
+    z-index: 1;
+}
+
+.button-gradient:hover {
+    animation: ani 8s linear infinite;
+    border: none;
+}
+
+@keyframes ani {
+    0% {
+        background-position: 0%;
+    }
+
+    100% {
+        background-position: 400%;
+    }
+}
+
+.button-gradient:before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #03a9f4);
+    background-size: 400%;
+    transition: 1s;
+}
+
+.button-gradient:hover::before {
+    filter: blur(20px);
+}
+
+.button-gradient:active {
+    background: linear-gradient(32deg, #03a9f4, #f441a5, #03a9f4);
 }

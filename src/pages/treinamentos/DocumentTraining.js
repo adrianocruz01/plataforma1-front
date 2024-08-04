@@ -65,12 +65,12 @@ const DocumentTraining = () => {
     };
 
     return (
-        <div className="flex flex-col h-fit w-full">
+        <div className="flex flex-col h-fit w-full bg-neutral-700 rounded-2xl p-8">
             <div className="flex gap-5 mb-6 flex-col">
                 <div className="flex flex-col">
                     <label
                         htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
+                        className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                     >
                         Novo treinamento
                     </label>
@@ -80,13 +80,13 @@ const DocumentTraining = () => {
                         value={newTrainingDocURL}
                         onChange={(e) => setNewTrainingDocURL(e.target.value)}
                         placeholder="Insira a URL de um arquivo PDF"
-                        className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                 </div>
                 <div className="flex flex-col">
                     <label
                         htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
+                        className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                     >
                         Nome do arquivo
                     </label>
@@ -96,17 +96,17 @@ const DocumentTraining = () => {
                         value={newTrainingDocument}
                         onChange={(e) => setNewTrainingDocument(e.target.value)}
                         placeholder='Insira o nome do arquivo, como "Nome do arquivo.pdf"'
-                        className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                 </div>
                 <button
-                    className="self-end px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow"
+                    className="self-end px-3 py-2 button-gradient before:rounded-lg text-white rounded-md font-bold shadow"
                     onClick={(e) => createTraining(e)}
                 >
                     Cadastrar
                 </button>
             </div>
-            <div>
+            <div className="mt-8">
                 {trainings.map((training, index) => (
                     <Training
                         training={training}
