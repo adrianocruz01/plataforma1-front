@@ -1,73 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 
-const FileUpload = () => {
-  const [file, setFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [fileUrl, setFileUrl] = useState('');
+const FileUpload = ({ onUpload, supportedTypes }) => {
+    const [file, setFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [dragging, setDragging] = useState(false);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (!supportedTypes.includes(selectedFile.type)) {
+            toast.error("Tipo de arquivo não suportado");
+            return;
+        }
+        setFile(selectedFile);
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) return;
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!file) return;
 
-    setUploading(true);
-    setMessage('');
-    setFileUrl('');
+        setUploading(true);
 
-    const formData = new FormData();
-    formData.append('file', file);
+        const formData = new FormData();
+        formData.append("file", file);
 
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        try {
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
 
-      const result = await response.json();
-      setMessage(result.message || 'Arquivo enviado com sucesso');
-      setFileUrl(result.fileUrl || '');
-      
-      // Usar a URL do arquivo para enviar para outra API
-      if (result.fileUrl) {
-        await fetch('URL_DA_OUTRA_API', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ fileUrl: result.fileUrl }),
-        });
-      }
-    } catch (error) {
-      console.error('Erro no upload:', error);
-      setMessage('Falha no upload do arquivo');
-    } finally {
-      setUploading(false);
-    }
-  };
+            const result = await response.json();
+            if (result.fileUrl) {
+                toast.success(result.message || "Arquivo enviado com sucesso");
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} />
-        <button type="submit" disabled={uploading}>
-          {uploading ? 'Enviando...' : 'Enviar'}
-        </button>
-      </form>
-      {message && <p>{message}</p>}
-      {fileUrl && (
+                const data = {
+                    name: file.name,
+                    url: result.fileUrl,
+                    type: file.type,
+                };
+                await onUpload(data);
+            } else {
+                toast.error("Falha no upload do arquivo");
+            }
+        } catch (error) {
+            console.error("Erro no upload:", error);
+            toast.error("Falha no upload do arquivo");
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+
+        const droppedFile = e.dataTransfer.files[0];
+        if (!supportedTypes.includes(droppedFile.type)) {
+            toast.error("Tipo de arquivo não suportado");
+            return;
+        }
+        setFile(droppedFile);
+    };
+
+    const handleClick = () => {
+        document.getElementById("fileInput").click();
+    };
+
+    const cancelUpload = (e) => {
+        e.stopPropagation();
+        setFile(null);
+    };
+
+    return (
         <div>
-          <p>Arquivo enviado com sucesso:</p>
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-            {fileUrl}
-          </a>
+            <form className="flex flex-col" onSubmit={handleSubmit}>
+                <div className="border-dashed border border-neutral-900 rounded-lg p-1 mb-5">
+                    <div
+                        className={`bg-neutral-900 transition-all rounded-md text-white flex items-center justify-center p-6 min-h-20 ${
+                            dragging ? "bg-neutral-300" : ""
+                        }`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={handleClick}
+                    >
+                        <input
+                            id="fileInput"
+                            type="file"
+                            className="hidden"
+                            onChange={handleFileChange}
+                        />
+                        <p className="text-center">
+                            {file ? (
+                                <span className="font-semibold text-sm">
+                                    {file.name}{" "}
+                                    <span
+                                        className=""
+                                        onClick={(e) => cancelUpload(e)}
+                                    >
+                                        <CloseOutlined fontSize="inherit" />
+                                    </span>
+                                </span>
+                            ) : (
+                                <span className="text-neutral-50 text-sm font-semibold">
+                                  <UploadFileOutlined /> Clique aqui para fazer upload ou arraste e
+                                    solte seu documento aqui.
+                                    <br />
+                                    <span className="text-neutral-400 text-xs font-normal">Tipos suportados: .pdf, .txt, .doc, .docx
+                                    (Tamanho máx. 10MB)</span>
+                                </span>
+                            )}
+                        </p>
+                    </div>
+                </div>
+                <button
+                    className="self-end px-3 py-2 button-gradient before:rounded-lg text-white rounded-md font-bold shadow"
+                    type="submit"
+                    disabled={uploading}
+                >
+                    {uploading ? "Enviando..." : "Enviar"}
+                </button>
+            </form>
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default FileUpload;

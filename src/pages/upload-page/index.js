@@ -6,7 +6,7 @@ const UploadPage = () => {
   };
 
   return (
-    <div className='bg-cyan-400 bg-fuchsia-400'>
+    <div className=''>
       <h1>Upload de Arquivo</h1>
       <FileUpload onUpload={handleUpload} />
     </div>

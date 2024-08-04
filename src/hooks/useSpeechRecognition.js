@@ -10,6 +10,7 @@ const useSpeechRecognition = () => {
             const recognition = new webkitSpeechRecognition();
             recognition.lang = "pt-BR";
             recognition.continuous = true;
+            recognition.iterimResults = true;
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
