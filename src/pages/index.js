@@ -32,6 +32,11 @@ const HomePage = () => {
             target: "_blank",
         },
         {
+            slug: "clonagem-voz",
+            title: "Clonar voz",
+            source: ClonagemVoz,
+        },
+        {
             slug: "",
             title: "Ligações em massa",
             source: Ligacoes,
@@ -55,11 +60,6 @@ const HomePage = () => {
             slug: "",
             title: "Plano de Marketing",
             source: Marketing,
-        },
-        {
-            slug: "clonagem-voz",
-            title: "Clonar voz",
-            source: ClonagemVoz,
         },
     ];
     const [windowWidth, setWindowWidth] = useState(0);
@@ -104,7 +104,7 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen w-full lg:flex flex-col lg:flex-row overflow-hidden relative pt-10">
+        <div className="min-h-screen w-full lg:flex flex-col lg:flex-row overflow-hidden relative pt-10 lg:pt-0">
             <div className="relative h-full lg:h-screen w-screen flex flex-col items-center justify-center">
                 <div
                     className={`relative ${
