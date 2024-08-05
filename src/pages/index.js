@@ -7,6 +7,7 @@ import SMS from "@/assets/images/icone-sms.png";
 import TeConvida from "@/assets/images/icone-teconvida.png";
 import Zury from "@/assets/images/botao-zury.png";
 import Biblioteca from "@/assets/images/icone-biblioteca.png";
+import ClonagemVoz from "@/assets/images/icone-clonagem-voz.png";
 import Card from "@/components/Card";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +21,7 @@ const HomePage = () => {
             source: Biblioteca,
         },
         {
-            slug: "",
+            slug: "comportamento",
             title: "Criar personalidade",
             source: Personalidade,
         },
@@ -54,6 +55,11 @@ const HomePage = () => {
             slug: "",
             title: "Plano de Marketing",
             source: Marketing,
+        },
+        {
+            slug: "clonagem-voz",
+            title: "Clonar voz",
+            source: ClonagemVoz,
         },
     ];
     const [windowWidth, setWindowWidth] = useState(0);

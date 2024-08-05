@@ -39,15 +39,15 @@ const DocumentTraining = () => {
         }
     };
 
-    const createTraining = async (file) => {
-        if (!file || !file.name || !file.type || !file.url) {
+    const createTraining = async (file, fileUrl) => {
+        if (!file || !file.name || !file.type || !fileUrl) {
             toast.error("Erro ao fazer upload");
             return;
         }
 
         const payload = {
             type: "DOCUMENT",
-            documentUrl: `${domain}${file.url}`,
+            documentUrl: `${domain}${fileUrl}`,
             documentName: file.name,
             documentMimetype: file.type,
         };
@@ -75,12 +75,16 @@ const DocumentTraining = () => {
         }
     };
 
+    const warningText =
+        "Tipos suportados: .pdf, .txt, .doc, .docx (Tamanho máx. 10MB)";
+
     return (
         <div className="flex flex-col h-fit w-full bg-neutral-700 rounded-2xl p-8">
             <div className="flex gap-5 mb-6 flex-col">
                 <FileUpload
                     onUpload={createTraining}
                     supportedTypes={fileTypes}
+                    warningText={warningText}
                 />
             </div>
             <div className="mt-8">

@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { toast } from "react-toastify";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 
-const FileUpload = ({ onUpload, supportedTypes }) => {
+const FileUpload = ({ onUpload, supportedTypes, warningText }) => {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [dragging, setDragging] = useState(false);
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
         if (!supportedTypes.includes(selectedFile.type)) {
             toast.error("Tipo de arquivo não suportado");
             return;
@@ -34,14 +36,7 @@ const FileUpload = ({ onUpload, supportedTypes }) => {
 
             const result = await response.json();
             if (result.fileUrl) {
-                toast.success(result.message || "Arquivo enviado com sucesso");
-
-                const data = {
-                    name: file.name,
-                    url: result.fileUrl,
-                    type: file.type,
-                };
-                await onUpload(data);
+                await onUpload(file, result.fileUrl);
             } else {
                 toast.error("Falha no upload do arquivo");
             }
@@ -79,12 +74,15 @@ const FileUpload = ({ onUpload, supportedTypes }) => {
     };
 
     const handleClick = () => {
-        document.getElementById("fileInput").click();
+        fileInputRef.current.click();
     };
 
     const cancelUpload = (e) => {
         e.stopPropagation();
         setFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
     };
 
     return (
@@ -104,6 +102,7 @@ const FileUpload = ({ onUpload, supportedTypes }) => {
                             id="fileInput"
                             type="file"
                             className="hidden"
+                            ref={fileInputRef}
                             onChange={handleFileChange}
                         />
                         <p className="text-center">
@@ -119,11 +118,13 @@ const FileUpload = ({ onUpload, supportedTypes }) => {
                                 </span>
                             ) : (
                                 <span className="text-neutral-50 text-sm font-semibold">
-                                  <UploadFileOutlined /> Clique aqui para fazer upload ou arraste e
-                                    solte seu documento aqui.
+                                    <UploadFileOutlined /> Clique aqui para
+                                    fazer upload ou arraste e solte seu
+                                    documento aqui.
                                     <br />
-                                    <span className="text-neutral-400 text-xs font-normal">Tipos suportados: .pdf, .txt, .doc, .docx
-                                    (Tamanho máx. 10MB)</span>
+                                    <span className="text-neutral-400 text-xs font-normal">
+                                        {warningText}
+                                    </span>
                                 </span>
                             )}
                         </p>

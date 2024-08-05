@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 
 const Behavior = () => {
     const [newBehavior, setNewBehavior] = useState("");
+    const [assistant, setAssistant] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchBehavior();
@@ -24,18 +26,38 @@ const Behavior = () => {
             if (selectedAssistant) {
                 setNewBehavior(selectedAssistant.behavior);
             }
+            setAssistant(selectedAssistant);
         } catch (error) {
             console.error("Erro ao buscar comportamento:", error);
         }
     };
 
     const createBehavior = async (e) => {
+        e.preventDefault();
         if (!newBehavior) {
             toast.error("A descrição da personalidade não pode ser vazia.");
             return;
         }
-        e.target.disabled = true;
+
+        if (!assistant) {
+            toast.error("Nenhum assistente selecionado.");
+            return;
+        }
+
+        setIsLoading(true);
+
         try {
+            const payload = {
+                name: assistant.name,
+                avatar: assistant.avatar,
+                behavior: newBehavior,
+                communicationType: assistant.communicationType,
+                type: assistant.type,
+                jobName: assistant.jobName,
+                jobSite: assistant.jobSite,
+                jobDescription: assistant.jobDescription,
+            };
+
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEURL}/agents/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
@@ -43,19 +65,20 @@ const Behavior = () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        behavior: newBehavior,
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
+            console.log(payload);
             if (response.ok) {
                 toast.success("Personalidade atualizada!");
             } else {
                 toast.error("Erro ao atualizar personalidade.");
             }
-            e.target.disabled = false;
         } catch (error) {
             console.error("Erro ao atualizar personalidade:", error);
+            toast.error("Erro ao atualizar personalidade.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -65,7 +88,7 @@ const Behavior = () => {
                 <div className="flex flex-col">
                     <label
                         htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
+                        className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                     >
                         Personalidade
                     </label>
@@ -77,14 +100,15 @@ const Behavior = () => {
                         value={newBehavior}
                         onChange={(e) => setNewBehavior(e.target.value)}
                         placeholder="Descreva a personalidade"
-                        className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                 </div>
                 <button
-                    className="self-end px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow"
-                    onClick={(e) => createBehavior(e)}
+                    className="self-end px-3 py-2 button-gradient before:rounded-lg text-white rounded-md font-bold shadow"
+                    onClick={createBehavior}
+                    disabled={isLoading}
                 >
-                    Cadastrar
+                    {isLoading ? "Cadastrando..." : "Cadastrar"}
                 </button>
             </div>
         </div>
