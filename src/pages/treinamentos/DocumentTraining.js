@@ -1,10 +1,24 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
+import { toast } from "react-toastify";
+import FileUpload from "@/components/FileUpload";
 
 const DocumentTraining = () => {
     const [trainings, setTrainings] = useState([]);
-    const [newTrainingDocument, setNewTrainingDocument] = useState("");
-    const [newTrainingDocURL, setNewTrainingDocURL] = useState("");
+    const [domain, setDomain] = useState("");
+    const fileTypes = [
+        "application/pdf",
+        "text/plain",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const { origin } = window.location;
+            setDomain(origin);
+        }
+    }, []);
 
     useEffect(() => {
         fetchTrainings();
@@ -13,96 +27,67 @@ const DocumentTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=DOCUMENT`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=DOCUMENT`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            console.error("Erro ao buscar treinamentos:", error);
         }
     };
 
-    const createTraining = async (e) => {
-        if (!newTrainingDocument || !newTrainingDocURL) return;
-        e.target.disabled = true;
+    const createTraining = async (file, fileUrl) => {
+        if (!file || !file.name || !file.type || !fileUrl) {
+            toast.error("Erro ao fazer upload");
+            return;
+        }
+
+        const payload = {
+            type: "DOCUMENT",
+            documentUrl: `${domain}${fileUrl}`,
+            documentName: file.name,
+            documentMimetype: file.type,
+        };
 
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        affirmationType: "DOCUMENT",
-                        documentUrl: newTrainingDocURL,
-                        documentName: newTrainingDocument,
-                        documentMimetype: "application/pdf",
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings([...trainings, data]);
-            setNewTrainingDocument("");
-            setNewTrainingDocURL("");
-            e.target.disabled = false;
+            if (response.ok) {
+                toast.success("Treinamento cadastrado!");
+                setTrainings([...trainings, data]);
+            } else {
+                toast.error("Erro ao criar treinamento.");
+            }
         } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
+            console.error("Erro ao criar treinamento:", error);
         }
     };
 
+    const warningText =
+        "Tipos suportados: .pdf, .txt, .doc, .docx (Tamanho máx. 10MB)";
+
     return (
-        <div className="flex flex-col h-fit w-full">
+        <div className="flex flex-col h-fit w-full bg-neutral-700 rounded-2xl p-8">
             <div className="flex gap-5 mb-6 flex-col">
-                <div className="flex flex-col">
-                    <label
-                        htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
-                    >
-                        Novo treinamento
-                    </label>
-                    <input
-                        id="new-training"
-                        type="text"
-                        value={newTrainingDocURL}
-                        onChange={(e) => setNewTrainingDocURL(e.target.value)}
-                        placeholder="Insira a URL de um arquivo PDF"
-                        className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <label
-                        htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
-                    >
-                        Nome do arquivo
-                    </label>
-                    <input
-                        id="new-training"
-                        type="text"
-                        value={newTrainingDocument}
-                        onChange={(e) => setNewTrainingDocument(e.target.value)}
-                        placeholder='Insira o nome do arquivo, como "Nome do arquivo.pdf"'
-                        className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
-                    />
-                </div>
-                <button
-                    className="self-end px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow"
-                    onClick={(e) => createTraining(e)}
-                >
-                    Cadastrar
-                </button>
+                <FileUpload
+                    onUpload={createTraining}
+                    supportedTypes={fileTypes}
+                    warningText={warningText}
+                />
             </div>
-            <div>
+            <div className="mt-8">
                 {trainings.map((training, index) => (
                     <Training
                         training={training}

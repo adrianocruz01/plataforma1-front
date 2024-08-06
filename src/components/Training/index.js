@@ -4,7 +4,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import { MenuRounded } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 const Training = ({ training, trainings, setTrainings, type }) => {
     const [editingTrainingId, setEditingTrainingId] = useState(null);
@@ -15,10 +15,10 @@ const Training = ({ training, trainings, setTrainings, type }) => {
 
     switch (type) {
         case "text":
-            trainingInfo = training.description;
+            trainingInfo = training.text;
             break;
         case "website":
-            trainingInfo = training.websiteUrl;
+            trainingInfo = training.website;
             break;
         case "document":
             trainingInfo = training.documentName;
@@ -48,57 +48,70 @@ const Training = ({ training, trainings, setTrainings, type }) => {
     }, []);
 
     const editTraining = async (trainingId) => {
-        if (!editingTrainingText) return;
+        if (!editingTrainingText) {
+            toast.error(
+                "O campo de descrição do treinamento não pode ser vazio!"
+            );
+            return;
+        }
         setEditMenu(false);
         try {
+            const payload = {
+                type: "TEXT",
+                text: editingTrainingText,
+            };
+
+            if (editingTrainingImgURL) {
+                payload.image = editingTrainingImgURL;
+            }
+
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
                 {
                     method: "PUT",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        description: editingTrainingText,
-                        image:
-                            editingTrainingImgURL === ""
-                                ? null
-                                : editingTrainingImgURL,
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings(
-                trainings.map((training) =>
-                    training.id === trainingId ? data : training
-                )
-            );
-            setEditingTrainingId(null);
-            setEditingTrainingText("");
-            setEditingTrainingImgURL("");
+            if (response.ok) {
+                toast.success("Treinamento atualizado!");
+                setTrainings(
+                    trainings.map((training) =>
+                        training.id === trainingId ? data : training
+                    )
+                );
+                setEditingTrainingId(null);
+                setEditingTrainingText("");
+                setEditingTrainingImgURL("");
+            } else {
+                toast.error("Erro ao editar treinamento.");
+            }
         } catch (error) {
-            console.error("Erro ao editar tarefa:", error);
+            console.error("Erro ao editar treinamento:", error);
         }
     };
 
     const deleteTraining = async (trainingId) => {
         setEditMenu(false);
         try {
-            await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/affirmation/${trainingId}`,
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
                 {
                     method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
                 }
             );
-            setTrainings(
-                trainings.filter((training) => training.id !== trainingId)
-            );
+            if (response.ok) {
+                toast.success('Treinamento excluído!')
+                const remainingTraining = trainings.filter((training) => training.id !== trainingId);
+                setTrainings(remainingTraining);
+            } else {
+                toast.success('Erro ao excluir treinamento!')
+            }
         } catch (error) {
-            console.error("Erro ao deletar tarefa:", error);
+            console.error("Erro ao deletar treinamento:", error);
         }
     };
 
@@ -107,7 +120,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
         const editedTraining = trainings.find(
             (training) => training.id === trainingId
         );
-        setEditingTrainingText(editedTraining.description);
+        setEditingTrainingText(editedTraining.text);
         setEditingTrainingImgURL(editedTraining.image);
     };
 
@@ -119,7 +132,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
     return (
         <div
             key={training.id}
-            className={`bg-neutral-50 transition-shadow shadow hover:shadow-lg p-5 rounded-md mb-5 last:mb-0 flex justify-between ${
+            className={`gradient-container text-white transition-shadow shadow hover:shadow-lg p-5 rounded-md mb-5 last:mb-0 flex justify-between ${
                 editingTrainingId ? "flex-col md:flex-row" : ""
             }`}
         >
@@ -132,7 +145,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                         value={editingTrainingText}
                         onChange={(e) => setEditingTrainingText(e.target.value)}
                         placeholder="Descreva o novo treinamento"
-                        className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                     <input
                         type="url"
@@ -141,11 +154,11 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                             setEditingTrainingImgURL(e.target.value)
                         }
                         placeholder="Nova URL da imagem (opcional)"
-                        className="rounded-md p-3 focus-visible:outline-none border border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                 </div>
             ) : (
-                <div className="flex-grow whitespace-normal">
+                <div className="flex-grow whitespace-normal overflow-wrap-anywhere">
                     {trainingInfo}
                 </div>
             )}
@@ -176,13 +189,13 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                         <MoreVertOutlinedIcon />
                     </button>
                     <div
-                        className={`flex flex-col absolute bg-white shadow rounded z-10 ${
+                        className={`flex flex-col absolute bg-neutral-700 shadow rounded z-10 gradient-container ${
                             editMenu ? "flex" : "hidden"
                         }`}
                         ref={editMenuRef}
                     >
                         <button
-                            className={`py-3 px-4 flex items-center transition-colors duration-300 text-blue-600 hover:bg-neutral-200 ${
+                            className={`py-3 px-4 flex items-center transition-colors duration-300 text-blue-400 hover:bg-neutral-600  ${
                                 type === "text" ? "flex" : "hidden"
                             }`}
                             onClick={() => editingTraining(training.id)}
@@ -192,7 +205,7 @@ const Training = ({ training, trainings, setTrainings, type }) => {
                             <span className="text-xs ml-1">Editar</span>
                         </button>
                         <button
-                            className="py-3 px-4 flex items-center transition-colors duration-300 text-red-600 hover:bg-neutral-200"
+                            className="py-3 px-4 flex items-center transition-colors duration-300 text-red-400 hover:bg-neutral-600 "
                             onClick={() => deleteTraining(training.id)}
                             title="Excluir"
                         >

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Training from "@/components/Training";
+import { toast } from "react-toastify";
 
 const WebsiteTraining = () => {
     const [trainings, setTrainings] = useState([]);
@@ -14,49 +15,52 @@ const WebsiteTraining = () => {
     const fetchTrainings = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations?page=1&pageSize=150&query=&type=WEBSITE`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=WEBSITE`,
                 {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-                    },
-                    maxBodyLength: Infinity,
                 }
             );
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            console.error("Erro ao buscar treinamentos:", error);
         }
     };
 
     const createTraining = async (e) => {
-        if (!newTrainingWebsite) return;
+        if (!newTrainingWebsite) {
+            toast.error("O campo 'Novo treinamento' não pode ser vazio!");
+            return;
+        }
         e.target.disabled = true;
-
+        const payload = {
+            type: "WEBSITE",
+            website: newTrainingWebsite,
+            trainingSubPages: subpagesNav,
+            trainingInterval: updateInterval,
+        };
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/assistant/${process.env.NEXT_PUBLIC_ASSISTANT_ID}/affirmations`,
+                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        affirmationType: "WEBSITE",
-                        websiteUrl: newTrainingWebsite,
-                        trainingSubPages: subpagesNav,
-                        trainingInterval: updateInterval,
-                    }),
+                    body: JSON.stringify(payload),
                 }
             );
             const data = await response.json();
-            setTrainings([...trainings, data]);
-            setNewTrainingWebsite("");
+            if (response.ok) {
+                toast.success("Treinamento cadastrado!");
+                setTrainings([...trainings, data]);
+                setNewTrainingWebsite("");
+            } else {
+                toast.error("Erro ao criar treinamento.");
+            }
             e.target.disabled = false;
         } catch (error) {
-            console.error("Erro ao criar tarefa:", error);
+            console.error("Erro ao criar treinamento:", error);
         }
     };
 
@@ -65,12 +69,12 @@ const WebsiteTraining = () => {
     };
 
     return (
-        <div className="flex flex-col h-fit w-full">
+        <div className="flex flex-col h-fit w-full bg-neutral-700 rounded-2xl p-8">
             <div className="flex gap-5 mb-6 flex-col">
                 <div className="flex flex-col">
                     <label
                         htmlFor="new-training"
-                        className="pl-2 text-xs mb-2 border-l border-orange-600"
+                        className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                     >
                         Novo treinamento
                     </label>
@@ -80,14 +84,14 @@ const WebsiteTraining = () => {
                         value={newTrainingWebsite}
                         onChange={(e) => setNewTrainingWebsite(e.target.value)}
                         placeholder="Insira a URL de um site"
-                        className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
+                        className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                     />
                 </div>
                 <div className="flex gap-5">
                     <div className="flex flex-col w-full">
                         <label
                             htmlFor="update"
-                            className="pl-2 text-xs mb-2 border-l border-orange-600"
+                            className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                         >
                             Intervalo de atualização
                         </label>
@@ -95,7 +99,7 @@ const WebsiteTraining = () => {
                             name="update"
                             id="update"
                             value={updateInterval}
-                            className="rounded-md p-3 focus-visible:outline-none border bg-white border-neutral-100 focus-visible:border-neutral-300"
+                            className="rounded-md p-3 focus-visible:outline-none bg-neutral-900 text-white"
                             onChange={(e) => setUpdateInterval(e.target.value)}
                         >
                             <option value="NEVER">Nunca</option>
@@ -111,7 +115,7 @@ const WebsiteTraining = () => {
                     <div className="flex flex-col w-full">
                         <label
                             htmlFor="subpages"
-                            className="pl-2 text-xs mb-2 border-l border-orange-600"
+                            className="pl-2 text-xs text-neutral-100 mb-2 border-l-2 border-cyan-600"
                         >
                             Permitir navegar em subpáginas
                         </label>
@@ -125,7 +129,9 @@ const WebsiteTraining = () => {
                                 checked={subpagesNav === "DISABLED"}
                                 onChange={(e) => handleRadio(e)}
                             />
-                            <label className="mr-3" htmlFor="no">Não</label>
+                            <label className="mr-3 text-neutral-100" htmlFor="no">
+                                Não
+                            </label>
                             <input
                                 className="mr-1"
                                 type="radio"
@@ -135,20 +141,20 @@ const WebsiteTraining = () => {
                                 checked={subpagesNav === "ACTIVE"}
                                 onChange={(e) => handleRadio(e)}
                             />
-                            <label className="mr-3" htmlFor="yes">
+                            <label className="mr-3 text-neutral-100" htmlFor="yes">
                                 Sim
                             </label>
                         </div>
                     </div>
                 </div>
                 <button
-                    className="self-end px-3 py-2 bg-sky-600 text-white rounded-md font-medium shadow"
+                    className="self-end px-3 py-2 button-gradient before:rounded-lg text-white rounded-md font-bold shadow"
                     onClick={(e) => createTraining(e)}
                 >
                     Cadastrar
                 </button>
             </div>
-            <div>
+            <div className="mt-8">
                 {trainings.map((training, index) => (
                     <Training
                         training={training}
