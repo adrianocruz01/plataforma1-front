@@ -82,7 +82,7 @@ const CloningVoice = () => {
 
         try {
             const response = await fetch(
-                `https://la-caixa-back-6bea159cce42.herokuapp.com/clone-voice`,
+                `https://well-back-a8aca79ce9cd.herokuapp.com/api/audio/clone-voice`,
                 {
                     method: "POST",
                     body: formData,
