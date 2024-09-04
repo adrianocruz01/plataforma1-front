@@ -13,7 +13,7 @@ const Connection = () => {
         setError(null);
         try {
             const response = await fetch(
-                "https://oro-back-ea9c13ba16a7.herokuapp.com/api/message/qr-code-json",
+                "https://lueur-back-c0816d489493.herokuapp.com/api/message/qr-code-json",
                 {
                     method: "GET",
                 }
