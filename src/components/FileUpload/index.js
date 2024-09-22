@@ -1,51 +1,35 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { toast } from "react-toastify";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 
-const FileUpload = ({ onUpload, supportedTypes, warningText }) => {
+const FileUpload = forwardRef(({ onFileSelected, supportedTypes, warningText }, ref) => {
     const [file, setFile] = useState(null);
-    const [uploading, setUploading] = useState(false);
     const [dragging, setDragging] = useState(false);
     const fileInputRef = useRef(null);
 
-    const handleFileChange = (e) => {
+    const resetFile = () => {
+        setFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
+    };
+
+    useImperativeHandle(ref, () => ({
+        resetFile,
+    }));
+
+    const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
         if (!selectedFile) return;
+
         if (!supportedTypes.includes(selectedFile.type)) {
             toast.error("Tipo de arquivo não suportado");
             return;
         }
+
         setFile(selectedFile);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!file) return;
-
-        setUploading(true);
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-            const response = await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-
-            const result = await response.json();
-            if (result.fileUrl) {
-                await onUpload(file, result.fileUrl);
-            } else {
-                toast.error("Falha no upload do arquivo");
-            }
-        } catch (error) {
-            console.error("Erro no upload:", error);
-            toast.error("Falha no upload do arquivo");
-        } finally {
-            setUploading(false);
-        }
+        await onFileSelected(selectedFile);
     };
 
     const handleDragOver = (e) => {
@@ -60,7 +44,7 @@ const FileUpload = ({ onUpload, supportedTypes, warningText }) => {
         setDragging(false);
     };
 
-    const handleDrop = (e) => {
+    const handleDrop = async (e) => {
         e.preventDefault();
         e.stopPropagation();
         setDragging(false);
@@ -70,76 +54,63 @@ const FileUpload = ({ onUpload, supportedTypes, warningText }) => {
             toast.error("Tipo de arquivo não suportado");
             return;
         }
+
         setFile(droppedFile);
+        await onFileSelected(droppedFile);
     };
 
     const handleClick = () => {
         fileInputRef.current.click();
     };
 
-    const cancelUpload = (e) => {
+    const cancelUpload = async (e) => {
         e.stopPropagation();
-        setFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = null;
-        }
+        resetFile();
+        await onFileSelected(null);
     };
 
     return (
         <div>
-            <form className="flex flex-col" onSubmit={handleSubmit}>
-                <div className="border-dashed border border-neutral-900 rounded-lg p-1 mb-5">
-                    <div
-                        className={`bg-neutral-900 transition-all rounded-md text-white flex items-center justify-center p-6 min-h-20 ${
-                            dragging ? "bg-neutral-300" : ""
-                        }`}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        onClick={handleClick}
-                    >
-                        <input
-                            id="fileInput"
-                            type="file"
-                            className="hidden"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                        />
-                        <p className="text-center">
-                            {file ? (
-                                <span className="font-semibold text-sm">
-                                    {file.name}{" "}
-                                    <span
-                                        className=""
-                                        onClick={(e) => cancelUpload(e)}
-                                    >
-                                        <CloseOutlined fontSize="inherit" />
-                                    </span>
-                                </span>
-                            ) : (
-                                <span className="text-neutral-50 text-sm font-semibold">
-                                    <UploadFileOutlined /> Clique aqui para
-                                    fazer upload ou arraste e solte seu
-                                    documento aqui.
-                                    <br />
-                                    <span className="text-neutral-400 text-xs font-normal">
-                                        {warningText}
-                                    </span>
-                                </span>
-                            )}
-                        </p>
-                    </div>
-                </div>
-                <button
-                    className="self-end px-3 py-2 button-gradient before:rounded-lg text-white rounded-md font-bold shadow"
-                    type="submit"
-                    disabled={uploading}
+            <div className="border-dashed border border-neutral-900 rounded-lg p-1 mb-5">
+                <div
+                    className={`bg-neutral-900 transition-all rounded-md text-white flex items-center justify-center p-6 min-h-20 ${
+                        dragging ? "bg-neutral-300" : ""
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={handleClick}
                 >
-                    {uploading ? "Enviando..." : "Enviar"}
-                </button>
-            </form>
+                    <input
+                        id="fileInput"
+                        type="file"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                    />
+                    <p className="text-center">
+                        {file ? (
+                            <span className="font-semibold text-sm">
+                                {file.name}{" "}
+                                <span onClick={(e) => cancelUpload(e)}>
+                                    <CloseOutlined fontSize="inherit" />
+                                </span>
+                            </span>
+                        ) : (
+                            <span className="text-neutral-50 text-sm font-semibold">
+                                <UploadFileOutlined /> Clique aqui para fazer
+                                upload ou arraste e solte seu arquivo aqui.
+                                <br />
+                                <span className="text-neutral-400 text-xs font-normal">
+                                    {warningText}
+                                </span>
+                            </span>
+                        )}
+                    </p>
+                </div>
+            </div>
         </div>
     );
-};
+});
 
 export default FileUpload;

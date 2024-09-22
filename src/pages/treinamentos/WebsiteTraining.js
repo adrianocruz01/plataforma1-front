@@ -129,7 +129,10 @@ const WebsiteTraining = () => {
                                 checked={subpagesNav === "DISABLED"}
                                 onChange={(e) => handleRadio(e)}
                             />
-                            <label className="mr-3 text-neutral-100" htmlFor="no">
+                            <label
+                                className="mr-3 text-neutral-100"
+                                htmlFor="no"
+                            >
                                 Não
                             </label>
                             <input
@@ -141,7 +144,10 @@ const WebsiteTraining = () => {
                                 checked={subpagesNav === "ACTIVE"}
                                 onChange={(e) => handleRadio(e)}
                             />
-                            <label className="mr-3 text-neutral-100" htmlFor="yes">
+                            <label
+                                className="mr-3 text-neutral-100"
+                                htmlFor="yes"
+                            >
                                 Sim
                             </label>
                         </div>
