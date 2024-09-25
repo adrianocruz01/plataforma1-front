@@ -112,5 +112,5 @@ const FileUpload = forwardRef(({ onFileSelected, supportedTypes, warningText }, 
         </div>
     );
 });
-
+FileUpload.displayName = "FileUpload";
 export default FileUpload;
