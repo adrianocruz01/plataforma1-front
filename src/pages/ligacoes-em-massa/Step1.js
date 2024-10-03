@@ -43,11 +43,11 @@ const Step1 = ({ formData, setFormData, validateStep }) => {
 
     const [file, setFile] = useState(null);
     const [audioName, setAudioName] = useState("");
-    const [audioId, setAudioId] = useState(formData.content);
+    const [audioId, setAudioId] = useState(formData.content || null);
     const fileUploadRef = useRef(null);
     const [validation, setValidation] = useState({
-        name: null,
-        audioName: null,
+        name: '',
+        audioName: '',
         content: null,
     });
 
