@@ -37,9 +37,14 @@ const HomePage = () => {
             source: ClonagemVoz,
         },
         {
-            slug: "",
-            title: "Ligações em massa",
+            slug: "ligacoes-em-massa",
+            title: "Disparo de ligações em massa",
             source: Ligacoes,
+        },
+        {
+            slug: "",
+            title: "Disparo de SMS único",
+            source: SMS,
         },
         {
             slug: "",
@@ -50,11 +55,6 @@ const HomePage = () => {
             slug: "",
             title: "Conectar mídias sociais",
             source: MidiasSociais,
-        },
-        {
-            slug: "",
-            title: "SMS em massa",
-            source: SMS,
         },
         {
             slug: "",
