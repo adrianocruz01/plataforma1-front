@@ -79,15 +79,19 @@ const CloningVoice = () => {
         const formData = new FormData();
         formData.append("clientId", "generic_voice");
         formData.append("audio", file);
+        console.log('enviando do front: ', formData)
 
         try {
             const response = await fetch(
-                `https://well-back-a8aca79ce9cd.herokuapp.com/api/audio/clone-voice`,
+                `https://well-back-76ebaef83ea2.herokuapp.com/api/audio/clone-voice`,
                 {
                     method: "POST",
                     body: formData,
+                    clientId: "generic_voice"
                 }
             );
+
+            console.log('retorno do post: ',response)
 
             if (response.ok) {
                 toast.success("Clone de voz realizado!");
