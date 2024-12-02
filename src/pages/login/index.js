@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 export default function Login() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [senha, setsenha] = useState('');
     const { login } = useAuth();
     const [loading, setLoading] = useState(false);
 
@@ -13,15 +13,15 @@ export default function Login() {
         setLoading(true);
         
         try {
-            console.log('Tentando login com:', { email, password });
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/auth/login`, {
+            console.log('Tentando login com:', { email, senha });
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email,
-                    password,
+                    senha,
                 }),
             });
 
@@ -70,19 +70,19 @@ export default function Login() {
                             />
                         </div>
                         <div>
-                            <label htmlFor="password" className="sr-only">
+                            <label htmlFor="senha" className="sr-only">
                                 Senha
                             </label>
                             <input
-                                id="password"
-                                name="password"
+                                id="senha"
+                                name="senha"
                                 type="password"
-                                autoComplete="current-password"
+                                autoComplete="current-senha"
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10 sm:text-sm"
                                 placeholder="Senha"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                value={senha}
+                                onChange={(e) => setsenha(e.target.value)}
                             />
                         </div>
                     </div>
