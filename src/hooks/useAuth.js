@@ -12,9 +12,17 @@ export const useAuth = () => {
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
         
-        if (storedToken && storedUser) {
+        if (storedToken && storedUser && storedUser !== 'undefined') {
             setToken(storedToken);
-            setUser(JSON.parse(storedUser));
+            try {
+                const userData = JSON.parse(storedUser);
+                setUser(userData);
+            } catch (error) {
+                console.error('Erro ao fazer parse dos dados do usuário:', error);
+                // Limpa os dados inválidos do localStorage
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+            }
         }
         setLoading(false);
     }, []);
