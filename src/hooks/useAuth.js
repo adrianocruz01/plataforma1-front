@@ -60,9 +60,9 @@ export const useAuth = () => {
     return {
         token,
         user,
+        loading,
         login,
         logout,
-        isAuthenticated,
-        loading
+        isAuthenticated
     };
 };
