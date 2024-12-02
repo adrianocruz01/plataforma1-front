@@ -30,7 +30,23 @@ export default function Login() {
             console.log('Response data:', data);
 
             if (response.ok) {
-                login(data.user, data.token);
+                // Verifica se temos os dados necessários
+                if (!data.token) {
+                    console.error('Token não encontrado na resposta:', data);
+                    toast.error('Resposta inválida do servidor');
+                    return;
+                }
+
+                // Usa os dados corretos da API
+                const userData = {
+                    ...data.user,
+                    email: email // Garante que temos o email
+                };
+                
+                console.log('Dados do usuário antes do login:', userData);
+                console.log('Token antes do login:', data.token);
+                
+                await login(userData, data.token);
                 toast.success('Login realizado com sucesso!');
             } else {
                 toast.error(data.message || 'Erro ao realizar login');

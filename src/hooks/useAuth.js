@@ -27,7 +27,9 @@ export const useAuth = () => {
         setLoading(false);
     }, []);
 
-    const login = (userData, accessToken) => {
+    const login = async (userData, accessToken) => {
+        console.log('Login iniciado com:', { userData, accessToken });
+        
         // Salvar no localStorage
         localStorage.setItem('token', accessToken);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -36,11 +38,20 @@ export const useAuth = () => {
         setToken(accessToken);
         setUser(userData);
 
+        console.log('Estados atualizados:', { token: accessToken, user: userData });
+
         // Redirecionar para a página principal
-        router.push('/');
+        try {
+            await router.push('/');
+            console.log('Redirecionamento concluído');
+        } catch (error) {
+            console.error('Erro no redirecionamento:', error);
+        }
     };
 
-    const logout = () => {
+    const logout = async () => {
+        console.log('Logout iniciado');
+        
         // Limpar localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -50,11 +61,18 @@ export const useAuth = () => {
         setUser(null);
 
         // Redirecionar para login
-        router.push('/login');
+        try {
+            await router.push('/login');
+            console.log('Redirecionamento para login concluído');
+        } catch (error) {
+            console.error('Erro no redirecionamento do logout:', error);
+        }
     };
 
     const isAuthenticated = () => {
-        return !!token;
+        const isAuth = !!token;
+        console.log('Verificação de autenticação:', { isAuth, token });
+        return isAuth;
     };
 
     return {
