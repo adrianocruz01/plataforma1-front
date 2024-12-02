@@ -16,6 +16,7 @@ export const useAuth = () => {
             setToken(storedToken);
             try {
                 const userData = JSON.parse(storedUser);
+                console.log('Dados recuperados do localStorage:', userData);
                 setUser(userData);
             } catch (error) {
                 console.error('Erro ao fazer parse dos dados do usuário:', error);
@@ -28,17 +29,17 @@ export const useAuth = () => {
     }, []);
 
     const login = async (userData, accessToken) => {
-        console.log('Login iniciado com:', { userData, accessToken });
+        console.log('Login iniciado com dados completos:', userData);
         
-        // Salvar no localStorage
+        // Salvar payload completo no localStorage
         localStorage.setItem('token', accessToken);
         localStorage.setItem('user', JSON.stringify(userData));
         
-        // Atualizar estado
+        // Atualizar estado com todos os dados
         setToken(accessToken);
         setUser(userData);
 
-        console.log('Estados atualizados:', { token: accessToken, user: userData });
+        console.log('Estados atualizados com dados completos:', { token: accessToken, user: userData });
 
         // Redirecionar para a página principal
         try {

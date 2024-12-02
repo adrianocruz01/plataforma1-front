@@ -27,7 +27,7 @@ export default function Login() {
 
             console.log('Response status:', response.status);
             const data = await response.json();
-            console.log('Response data:', data);
+            console.log('Payload completo do login:', data);
 
             if (response.ok) {
                 // Verifica se temos os dados necessários
@@ -37,14 +37,12 @@ export default function Login() {
                     return;
                 }
 
-                // Usa os dados corretos da API
+                // Armazena o payload completo do usuário
                 const userData = {
-                    ...data.user,
-                    email: email // Garante que temos o email
+                    ...data // Mantém todos os dados da resposta
                 };
                 
-                console.log('Dados do usuário antes do login:', userData);
-                console.log('Token antes do login:', data.token);
+                console.log('Dados completos sendo armazenados:', userData);
                 
                 await login(userData, data.token);
                 toast.success('Login realizado com sucesso!');
