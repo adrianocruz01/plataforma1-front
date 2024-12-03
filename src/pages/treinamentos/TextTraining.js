@@ -8,21 +8,40 @@ const TextTraining = () => {
     const [newTrainingImgURL, setNewTrainingImgURL] = useState("");
 
     useEffect(() => {
-        fetchTrainings();
-    }, [trainings]);
+        fetchTrainings(); // Busca os treinamentos ao carregar o componente
+    }, []);
 
     const fetchTrainings = async () => {
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=TEXT`,
-                {
-                    method: "GET",
+            const storageData = JSON.parse(localStorage.getItem('user'));
+            // console.log('aqqqqqqqqqqqqqqqqqqqqqqqqqqq',storageData) // Certifique-se de que está usando a chave correta
+            if (!storageData.cliente) {
+                toast.error("Dados do cliente não encontrados no local storage.");
+                return;
+            }
+
+            const gptMakeId = storageData.cliente.gptMake.id;
+            const gptMakeToken = storageData.cliente.gptMake.token;
+            const authlogin = storageData.token;
+
+            const response = await fetch(`https://plataforma1-back-fb45862e8e86.herokuapp.com/api/treinos/agent/${gptMakeId}/text-trainings`, {
+                method: "GET",
+                headers: {
+                    "Authorization": authlogin,
+                    "gptMakeToken": gptMakeToken,
+                    "Content-Type": "application/json",
                 }
-            );
-            const data = await response.json();
-            setTrainings(data.data);
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setTrainings(data.data);
+            } else {
+                toast.error("Erro ao buscar treinamentos. Verifique as permissões.");
+            }
         } catch (error) {
             console.error("Erro ao buscar treinamentos:", error);
+            toast.error("Erro ao buscar treinamentos.");
         }
     };
 
@@ -32,7 +51,17 @@ const TextTraining = () => {
             return;
         }
         e.target.disabled = true;
+
         try {
+            const storageData = JSON.parse(localStorage.getItem('clienteData'));
+            if (!storageData || !storageData.cliente) {
+                toast.error("Dados do cliente não encontrados no local storage.");
+                return;
+            }
+
+            const gptMakeId = storageData.cliente.gptMake.id;
+            const gptMakeToken = storageData.cliente.gptMake.token;
+
             const payload = {
                 type: "TEXT",
                 text: newTrainingText,
@@ -42,18 +71,18 @@ const TextTraining = () => {
                 payload.image = newTrainingImgURL;
             }
 
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(payload),
-                }
-            );
-            const data = await response.json();
+            const response = await fetch(`https://plataforma1-back-fb45862e8e86.herokuapp.com/api/treinos/agent/${gptMakeId}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": authlogin,
+                    "gptMakeToken": gptMakeToken,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
             if (response.ok) {
+                const data = await response.json();
                 toast.success("Treinamento cadastrado!");
                 setNewTrainingText("");
                 setNewTrainingImgURL("");
@@ -61,9 +90,11 @@ const TextTraining = () => {
             } else {
                 toast.error("Erro ao criar treinamento.");
             }
-            e.target.disabled = false;
         } catch (error) {
             console.error("Erro ao criar treinamento:", error);
+            toast.error("Erro ao criar treinamento.");
+        } finally {
+            e.target.disabled = false;
         }
     };
 
@@ -112,15 +143,19 @@ const TextTraining = () => {
                 </button>
             </div>
             <div className="mt-8">
-                {trainings.map((training, index) => (
-                    <Training
-                        training={training}
-                        trainings={trainings}
-                        setTrainings={setTrainings}
-                        type={"text"}
-                        key={index}
-                    />
-                ))}
+                {trainings.length > 0 ? (
+                    trainings.map((training, index) => (
+                        <Training
+                            training={training}
+                            trainings={trainings}
+                            setTrainings={setTrainings}
+                            type={"text"}
+                            key={index}
+                        />
+                    ))
+                ) : (
+                    <p className="text-white">Nenhum treinamento disponível.</p>
+                )}
             </div>
         </div>
     );

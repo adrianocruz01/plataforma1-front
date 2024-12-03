@@ -37,7 +37,7 @@ const HomePage = () => {
             source: ClonagemVoz,
         },
         {
-            slug: "ligacoes-em-massa",
+            slug: "",
             title: "Disparo de ligações em massa",
             source: Ligacoes,
         },

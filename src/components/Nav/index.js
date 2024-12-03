@@ -50,6 +50,13 @@ const Nav = () => {
         }
     };
 
+    const handleLogout = () => {
+        // Limpa todos os itens armazenados no localStorage
+        localStorage.clear();
+        // Redireciona para a página inicial ou de login
+        window.location.href = "/";
+    };
+
     const buttons = [
         {
             slug: "conexoes",
@@ -57,7 +64,7 @@ const Nav = () => {
             source: WhatsApp,
         },
         {
-            slug: "conversas",
+            slug: "chat",
             title: "Ver conversas",
             source: Conversas,
         },
@@ -73,6 +80,14 @@ const Nav = () => {
             {buttons.map((button, index) => (
                 <HomeButton button={button} key={index} />
             ))}
+
+            {/* Botão fixo de Logout */}
+            <button
+                onClick={handleLogout}
+                className="fixed bottom-5 right-5 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600"
+            >
+                Sair
+            </button>
         </div>
     );
 };

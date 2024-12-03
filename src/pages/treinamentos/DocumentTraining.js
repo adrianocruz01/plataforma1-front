@@ -5,7 +5,6 @@ import FileUpload from "@/components/FileUpload";
 
 const DocumentTraining = () => {
     const [trainings, setTrainings] = useState([]);
-    const [domain, setDomain] = useState("");
     const [file, setFile] = useState(null);
     const [fileUrl, setFileUrl] = useState("");
     const fileUploadRef = useRef(null);
@@ -52,24 +51,26 @@ const DocumentTraining = () => {
     };
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const { origin } = window.location;
-            setDomain(origin);
-        }
-    }, []);
-
-    useEffect(() => {
         fetchTrainings();
     }, []);
 
     const fetchTrainings = async () => {
         try {
+            // Pegando o ID e token do GPT Maker do localStorage
+            const cliente = JSON.parse(localStorage.getItem("cliente"));
+            const gptMakeId = cliente.gptMake.id;
+            const gptMakeToken = cliente.gptMake.token;
+
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=DOCUMENT`,
+                `/api/trainings/agent/${gptMakeId}?type=DOCUMENT`,
                 {
                     method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${gptMakeToken}`,
+                    },
                 }
             );
+
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
@@ -77,30 +78,37 @@ const DocumentTraining = () => {
         }
     };
 
-    const createTraining = async (fileTraining) => {
-        if (!fileTraining || !fileTraining.name || !fileTraining.type || !fileTraining) {
+    const createTraining = async (fileTraining, fileUrl) => {
+        if (!fileTraining || !fileTraining.name || !fileTraining.type) {
             toast.error("Erro ao fazer upload.");
             return;
         }
 
+        // Pegando o ID e token do GPT Maker do localStorage
+        const cliente = JSON.parse(localStorage.getItem("cliente"));
+        const gptMakeId = cliente.gptMake.id;
+        const gptMakeToken = cliente.gptMake.token;
+
         const payload = {
             type: "DOCUMENT",
-            documentUrl: `${domain}${fileUrl}`,
+            documentUrl: fileUrl,
             documentName: fileTraining.name,
             documentMimetype: fileTraining.type,
         };
 
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
+                `http://localhost:3001/api/trainings/agent/${gptMakeId}`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${gptMakeToken}`,
                     },
                     body: JSON.stringify(payload),
                 }
             );
+
             if (response.ok) {
                 toast.success("Treinamento cadastrado!");
                 fetchTrainings();
@@ -112,8 +120,7 @@ const DocumentTraining = () => {
         }
     };
 
-    const warningText =
-        "Tipos suportados: .pdf, .txt, .doc, .docx (Tamanho máx. 10MB)";
+    const warningText = "Tipos suportados: .pdf, .txt, .doc, .docx (Tamanho máx. 10MB)";
 
     return (
         <div className="flex flex-col h-fit w-full bg-neutral-700 rounded-2xl p-8">

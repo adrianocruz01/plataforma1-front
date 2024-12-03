@@ -9,43 +9,55 @@ const AudioTraining = () => {
     const { startRecognition, transcript, isListening, stopRecognition } =
         useSpeechRecognition();
 
-        const createTraining = async (e) => {
-            if (!newTrainingText) {
-                toast.error("O campo 'Novo treinamento' não pode ser vazio!");
-                return;
-            }
-            e.target.disabled = true;
-            try {
-                const payload = {
-                    type: "TEXT",
-                    text: newTrainingText,
-                };
-    
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(payload),
-                    }
-                );
-                const data = await response.json();
-                if (response.ok) {
-                    toast.success("Treinamento cadastrado!");
-                    setNewTrainingText("");
-                    setNewTrainingImgURL("");
-                    setTrainings([...trainings, data]);
-                } else {
-                    toast.error("Erro ao criar treinamento.");
-                }
-                e.target.disabled = false;
-            } catch (error) {
-                console.error("Erro ao criar treinamento:", error);
-            }
-        };
+    // audioTraining.js
 
+    const createTraining = async (e) => {
+        if (!newTrainingText) {
+        toast.error("O campo 'Novo treinamento' não pode ser vazio!");
+        return;
+        }
+        
+        e.target.disabled = true;
+    
+        try {
+        // Pegando o ID e token do GPT Maker do localStorage
+        const cliente = JSON.parse(localStorage.getItem("cliente"));
+        const gptMakeId = cliente.gptMake.id;
+        const gptMakeToken = cliente.gptMake.token;
+    
+        const payload = {
+            type: "TEXT",
+            text: newTrainingText,
+        };
+    
+        const response = await fetch(
+            `http://localhost:3001/api/trainings/agent/${gptMakeId}`, // URL do nosso backend
+            {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${gptMakeToken}`,
+            },
+            body: JSON.stringify(payload),
+            }
+        );
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+            toast.success("Treinamento cadastrado!");
+            setNewTrainingText("");
+            setTrainings([...trainings, data]);
+        } else {
+            toast.error("Erro ao criar treinamento.");
+        }
+    
+        e.target.disabled = false;
+        } catch (error) {
+        console.error("Erro ao criar treinamento:", error);
+        }
+    };
+  
     useEffect(() => {
         setNewTrainingText(transcript);
     }, [transcript]);

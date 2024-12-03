@@ -10,16 +10,25 @@ const WebsiteTraining = () => {
 
     useEffect(() => {
         fetchTrainings();
-    }, [trainings]);
+    }, []);
 
     const fetchTrainings = async () => {
         try {
+            // Pegando o ID e token do GPT Maker do localStorage
+            const cliente = JSON.parse(localStorage.getItem("cliente"));
+            const gptMakeId = cliente.gptMake.id;
+            const gptMakeToken = cliente.gptMake.token;
+
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}?page=1&pageSize=1000000&type=WEBSITE`,
+                `/api/trainings/agent/${gptMakeId}?type=WEBSITE`,
                 {
                     method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${gptMakeToken}`,
+                    },
                 }
             );
+
             const data = await response.json();
             setTrainings(data.data);
         } catch (error) {
@@ -33,19 +42,27 @@ const WebsiteTraining = () => {
             return;
         }
         e.target.disabled = true;
+
+        // Pegando o ID e token do GPT Maker do localStorage
+        const cliente = JSON.parse(localStorage.getItem("cliente"));
+        const gptMakeId = cliente.gptMake.id;
+        const gptMakeToken = cliente.gptMake.token;
+
         const payload = {
             type: "WEBSITE",
             website: newTrainingWebsite,
             trainingSubPages: subpagesNav,
             trainingInterval: updateInterval,
         };
+
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/agent/${process.env.NEXT_PUBLIC_ASSISTANT_ID}`,
+                `http://localhost:3001/api/trainings/agent/${gptMakeId}`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${gptMakeToken}`,
                     },
                     body: JSON.stringify(payload),
                 }

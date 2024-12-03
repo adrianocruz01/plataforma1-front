@@ -8,7 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { ToastContainer, Bounce } from "react-toastify";
 import { useRouter } from 'next/router';
 
-const publicPages = ['/login', '/register']; // páginas que não precisam de autenticação
+const publicPages = ['/login', '/rere']; // páginas que não precisam de autenticação
 
 export default function App({ Component, pageProps }) {
     const { loading } = useAuth();

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import { toast } from "react-toastify";
 
@@ -8,44 +7,109 @@ const Connection = () => {
     const [qrCode, setQrCode] = useState(null);
     const [isConnected, setIsConnected] = useState(null);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchQrCode = async () => {
-        setError(null);
+        setIsLoading(true);
+        setError(null); // Resetar o erro antes de uma nova tentativa
+
+        // Obter os dados do localStorage
+        const storedUserString = localStorage.getItem("user");
+        if (!storedUserString) {
+            console.error("Nenhum dado encontrado no localStorage");
+            setError("Dados necessários não encontrados. Por favor, faça login novamente.");
+            setIsLoading(false);
+            return;
+        }
+
+        let userData;
         try {
-            const response = await fetch(
-                "https://well-back-76ebaef83ea2.herokuapp.com/api/message/qr-code-json",
-                {
-                    method: "GET",
-                }
-            );
+            userData = JSON.parse(storedUserString); // Parse dos dados armazenados
+            // console.log("Dados do usuário do localStorage:", userData);
+        } catch (error) {
+            console.error("Erro ao fazer parse dos dados do usuário:", error);
+            setError("Erro ao carregar dados do usuário. Por favor, faça login novamente.");
+            setIsLoading(false);
+            return;
+        }
 
-            if (!response.ok) {
-                throw new Error("Erro ao buscar QR Code");
-            }
+        const { cliente } = userData;
+        const { evolution } = cliente;
 
-            const data = await response.json();
-            if (data.connected) {
-                setIsConnected((prev) => {
-                    if (prev === false) {
-                        toast.success("WhatsApp conectado!");
+        // Verifique se os dados necessários existem
+        if (!cliente?.id || !evolution?.id || !evolution?.token) {
+            console.error("Dados necessários do Evolution não encontrados no localStorage");
+            setError("Dados necessários não encontrados. Por favor, faça login novamente.");
+            setIsLoading(false);
+            return;
+        }
+
+        // console.log("cliente.id:", cliente.id);
+        // console.log("cliente.evolution.id:", evolution.id);
+        // console.log("cliente.evolution.token:", evolution.token);
+
+        try {
+            const clienteId = cliente.id;
+            const instance = evolution.id;
+
+            // console.log("Parâmetros da requisição:", { clienteId, instance });
+
+            // Construir a URL com parâmetros de query
+            const url = new URL("https://plataforma1-back-fb45862e8e86.herokuapp.com/api/message/qr-code-json");
+            url.searchParams.append("clienteId", clienteId);
+            url.searchParams.append("instance", instance);
+
+            // console.log("URL da requisição:", url.toString());
+
+            const response = await fetch(url.toString(), {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${userData.token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            // console.log("Status da resposta:", response.status);
+
+            // Verifique se a resposta é JSON antes de tentar parsear
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const responseData = await response.json();
+                console.log("Dados da resposta:", responseData);
+
+                if (response.ok) {
+                    if (responseData.connected) {
+                        setIsConnected(true);
+                        setQrCode("Seu WhatsApp já está conectado à Zury.");
+                        toast.success("WhatsApp conectado com sucesso!");
+                    } else if (responseData.qrCodeBase64) {
+                        setIsConnected(false);
+                        setQrCode(`data:image/png;base64,${responseData.qrCodeBase64}`);
+                    } else if (responseData.error) {
+                        setError(responseData.error);
+                    } else {
+                        setQrCode("Não foi possível obter o QR Code.");
                     }
-                    return true;
-                });
-                setQrCode("Seu WhatsApp já está conectado à Zury.");
-            } else if (data.qrCodeBase64) {
-                setIsConnected(false);
-                setQrCode(`data:image/png;base64,${data.qrCodeBase64}`);
+                } else {
+                    console.error("Erro na API:", responseData);
+                    throw new Error(responseData.mensagem || "Erro ao buscar QR Code");
+                }
             } else {
-                setQrCode("Erro ao obter QR Code.");
+                const text = await response.text();
+                console.error("Resposta não é JSON:", text);
+                throw new Error("Resposta inesperada do servidor.");
             }
         } catch (error) {
-            setError(error.message);
+            console.error("Erro na requisição:", error.message);
+            setError(error.message || "Erro ao buscar QR Code. Tente novamente mais tarde.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchQrCode();
-        const interval = setInterval(fetchQrCode, 5000); // Atualiza a cada 5 segundos
+        const interval = setInterval(fetchQrCode, 30000); // Atualiza a cada 5 segundos
         return () => clearInterval(interval);
     }, []);
 
@@ -62,15 +126,16 @@ const Connection = () => {
                 </div>
                 <div className="flex flex-wrap flex-col">
                     {error && <p className="text-red-600 mx-auto">{error}</p>}
+                    {isLoading && <p className="text-neutral-100 mx-auto">Carregando...</p>}
                     {qrCode && (
                         <div className="mx-auto gradient-container rounded-xl">
                             {!isConnected ? (
-                                <Image
-                                    src={qrCode}
+                                <img
+                                    src={qrCode} // Exibindo a imagem base64 diretamente
                                     width={300}
                                     height={300}
                                     className="p-px rounded-xl shadow-xl"
-                                    alt="WhatsApp conectado"
+                                    alt="QR Code do WhatsApp"
                                 />
                             ) : (
                                 <div className="text-green-700 bg-green-100 shadow p-7 gap-4 rounded-xl flex flex-col items-center justify-center">
@@ -88,16 +153,16 @@ const Connection = () => {
                         <button
                             className="px-3 py-2 button-gradient text-white rounded-md before:rounded-md font-medium shadow"
                             onClick={fetchQrCode}
+                            disabled={isLoading}
                         >
                             Atualizar QR Code
                         </button>
                         <Link
                             className="px-3 py-2 button-gradient text-white rounded-md before:rounded-md font-medium shadow text-center"
-                            onClick={fetchQrCode}
                             target="_blank"
                             href={"https://crm.zury.ai/connections"}
                         >
-                            Voltar pra Zury
+                            Voltar para Zury
                         </Link>
                     </div>
                 </div>
