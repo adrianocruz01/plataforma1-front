@@ -71,7 +71,7 @@ export default function Register() {
                     senha: formData.senha,
                     evolution: {
                         id: formData.evoToken,
-                        token: `Bearer ${process.env.NEXT_PUBLIC_EVO}`
+                        token: `${process.env.NEXT_PUBLIC_EVO}`
                     },
                     gptMake: {
                         id: formData.gptToken,
