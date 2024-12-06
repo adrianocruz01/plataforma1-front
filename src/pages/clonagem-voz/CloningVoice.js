@@ -90,7 +90,7 @@ const CloningVoice = () => {
 
         try {
             const response = await fetch(
-                `https://well-back-76ebaef83ea2.herokuapp.com/api/audio/clone-voice`,
+                `https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/audio/clone-voice`,
                 {
                     method: "POST",
                     body: formData,

@@ -24,7 +24,7 @@ const TextTraining = () => {
             const gptMakeToken = storageData.cliente.gptMake.token;
             const authlogin = storageData.token;
 
-            const response = await fetch(`https://plataforma1-back-fb45862e8e86.herokuapp.com/api/treinos/agent/${gptMakeId}/text-trainings`, {
+            const response = await fetch(`https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/treinos/agent/${gptMakeId}/text-trainings`, {
                 method: "GET",
                 headers: {
                     "Authorization": authlogin,
@@ -71,7 +71,7 @@ const TextTraining = () => {
                 payload.image = newTrainingImgURL;
             }
 
-            const response = await fetch(`https://plataforma1-back-fb45862e8e86.herokuapp.com/api/treinos/agent/${gptMakeId}`, {
+            const response = await fetch(`https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/treinos/agent/${gptMakeId}`, {
                 method: "POST",
                 headers: {
                     "Authorization": authlogin,
