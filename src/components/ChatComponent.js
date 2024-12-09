@@ -10,9 +10,9 @@ const ChatComponent = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAIActive, setIsAIActive] = useState(true); // Novo estado para controlar a IA
 
-  const conversationsEndpoint = `https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/message/conversations`;
-  const sendMessageEndpoint = 'https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/message/send';
-  const toggleAIEndpoint = 'https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/message/toggle'; // Endpoint para ativar/desativar a IA
+  const conversationsEndpoint = `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/message/conversations`;
+  const sendMessageEndpoint = `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/message/send`;
+  const toggleAIEndpoint = `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/message/toggle`; // Endpoint para ativar/desativar a IA
 
   // Função para formatar a data para o padrão brasileiro
   const formatDateToBrazil = (date) => {

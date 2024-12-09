@@ -55,7 +55,7 @@ const Connection = () => {
             // console.log("Parâmetros da requisição:", { clienteId, instance });
 
             // Construir a URL com parâmetros de query
-            const url = new URL("https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/message/qr-code-json");
+            const url = new URL(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/message/qr-code-json`);
             url.searchParams.append("clienteId", clienteId);
             url.searchParams.append("instance", instance);
 

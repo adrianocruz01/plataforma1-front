@@ -8,6 +8,7 @@ const AudioTraining = () => {
     const [newTrainingText, setNewTrainingText] = useState("");
     const { startRecognition, transcript, isListening, stopRecognition } =
         useSpeechRecognition();
+    const [trainings, setTrainings] = useState([]);
 
     // audioTraining.js
 
@@ -20,27 +21,31 @@ const AudioTraining = () => {
         e.target.disabled = true;
     
         try {
-        // Pegando o ID e token do GPT Maker do localStorage
-        const cliente = JSON.parse(localStorage.getItem("cliente"));
-        const gptMakeId = cliente.gptMake.id;
-        const gptMakeToken = cliente.gptMake.token;
+            const storageData = JSON.parse(localStorage.getItem('user'));
+            // console.log('aqqqqqqqqqqqqqqqqqqqqqqqqqqq',storageData) // Certifique-se de que está usando a chave correta
+            if (!storageData.cliente) {
+                toast.error("Dados do cliente não encontrados no local storage.");
+                return;
+            }
+
+            const gptMakeId = storageData.cliente.gptMake.id;
+            const gptMakeToken = storageData.cliente.gptMake.token;
+            const authlogin = storageData.token;
     
         const payload = {
             type: "TEXT",
-            text: newTrainingText,
+            text: newTrainingText.trim(),
         };
     
-        const response = await fetch(
-            `http://localhost:3001/api/trainings/agent/${gptMakeId}`, // URL do nosso backend
-            {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/create-trainings`, {
             method: "POST",
             headers: {
+                "Authorization": authlogin,
+                "gptMakeToken": gptMakeToken,
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${gptMakeToken}`,
             },
             body: JSON.stringify(payload),
-            }
-        );
+        });
     
         const data = await response.json();
     
@@ -49,7 +54,7 @@ const AudioTraining = () => {
             setNewTrainingText("");
             setTrainings([...trainings, data]);
         } else {
-            toast.error("Erro ao criar treinamento.");
+            toast.error("Erro ao criar treinamentooooo.");
         }
     
         e.target.disabled = false;

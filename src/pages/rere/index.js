@@ -152,7 +152,7 @@ export default function Register() {
         }
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/register`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/clientes/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,6 +236,11 @@ export default function Register() {
             setLoadingGPT(true);
             const agentBody = {
                 name: formData.nome,
+                behavior: '.',
+                communicationType: 'FORMAL',
+                type: 'SALE',
+                jobDescription: 'Descrição da empresa',
+                jobName: 'Nome da empresa'
             };
 
             const response = await fetch('https://api.gptmaker.ai/v2/workspace/3C60D739C709E042E9C21686415D2D58/agents', {

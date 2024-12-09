@@ -24,7 +24,7 @@ const TextTraining = () => {
             const gptMakeToken = storageData.cliente.gptMake.token;
             const authlogin = storageData.token;
 
-            const response = await fetch(`https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/treinos/agent/${gptMakeId}/text-trainings`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/text-trainings`, {
                 method: "GET",
                 headers: {
                     "Authorization": authlogin,
@@ -41,7 +41,7 @@ const TextTraining = () => {
             }
         } catch (error) {
             console.error("Erro ao buscar treinamentos:", error);
-            toast.error("Erro ao buscar treinamentos.");
+            toast.error("Erro ao buscar treinamentos.");    
         }
     };
 
@@ -53,25 +53,30 @@ const TextTraining = () => {
         e.target.disabled = true;
 
         try {
-            const storageData = JSON.parse(localStorage.getItem('clienteData'));
-            if (!storageData || !storageData.cliente) {
+            const storageData = JSON.parse(localStorage.getItem('user'));
+            // console.log('aqqqqqqqqqqqqqqqqqqqqqqqqqqq',storageData) // Certifique-se de que está usando a chave correta
+            if (!storageData.cliente) {
                 toast.error("Dados do cliente não encontrados no local storage.");
                 return;
             }
 
             const gptMakeId = storageData.cliente.gptMake.id;
             const gptMakeToken = storageData.cliente.gptMake.token;
+            const authlogin = storageData.token;
+
+
 
             const payload = {
                 type: "TEXT",
-                text: newTrainingText,
+                text: newTrainingText.trim(),
             };
+            // console.log(payload)
 
             if (newTrainingImgURL) {
                 payload.image = newTrainingImgURL;
             }
 
-            const response = await fetch(`https://plataformazury-back-0eae0e8c7115.herokuapp.com/api/treinos/agent/${gptMakeId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/create-trainings`, {
                 method: "POST",
                 headers: {
                     "Authorization": authlogin,
@@ -80,6 +85,8 @@ const TextTraining = () => {
                 },
                 body: JSON.stringify(payload),
             });
+
+            console.log('retorno do envio do treinamento:' ,response)
 
             if (response.ok) {
                 const data = await response.json();
