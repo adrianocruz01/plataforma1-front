@@ -245,11 +245,17 @@ const ChatComponent = () => {
   };
 
   const toggleAI = async () => {
-    const storedToken = localStorage.getItem('token');
-    if (!storedToken) {
-      console.error('Token não encontrado');
-      return;
+    // const storedToken = localStorage.getItem('token');
+
+    const storageData = JSON.parse(localStorage.getItem('user'));
+
+    if (!storageData.cliente) {
+        toast.error("Dados do cliente não encontrados no local storage.");
+        return;
     }
+
+    const evoId = storageData.cliente.evolution.id;
+    const authlogin = storageData.token;
 
     const contact = contacts.find(c => c.id === activeContact);
     if (!contact) {
@@ -265,10 +271,12 @@ const ChatComponent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${storedToken}`,
+          Authorization: `Bearer ${authlogin}`,
         },
         body: JSON.stringify({
           number: contact.number,
+          nome: contact.name,
+          instance: evoId,
           isAIActive: newAIStatus,
         }),
       });

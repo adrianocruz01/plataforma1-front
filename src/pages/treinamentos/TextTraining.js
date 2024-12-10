@@ -64,8 +64,6 @@ const TextTraining = () => {
             const gptMakeToken = storageData.cliente.gptMake.token;
             const authlogin = storageData.token;
 
-
-
             const payload = {
                 type: "TEXT",
                 text: newTrainingText.trim(),
