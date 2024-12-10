@@ -93,7 +93,7 @@ const TextTraining = () => {
                 toast.success("Treinamento cadastrado!");
                 setNewTrainingText("");
                 setNewTrainingImgURL("");
-                setTrainings([...trainings, data]);
+                fetchTrainings()
             } else {
                 toast.error("Erro ao criar treinamento.");
             }

@@ -2,12 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import Training from "@/components/Training";
 import { toast } from "react-toastify";
 import FileUpload from "@/components/FileUpload";
+import { useRouter } from "next/router";
 
 const DocumentTraining = () => {
     const [trainings, setTrainings] = useState([]);
     const [file, setFile] = useState(null);
     const [fileUrl, setFileUrl] = useState("");
     const fileUploadRef = useRef(null);
+
+    const url = window.location.origin;
 
     const fileTypes = [
         "application/pdf",
@@ -79,22 +82,26 @@ const DocumentTraining = () => {
     };
 
     const createTraining = async (fileTraining, fileUrl) => {
+
         if (!fileTraining || !fileTraining.name || !fileTraining.type) {
             toast.error("Erro ao fazer upload.");
             return;
         }
 
         // Pegando o ID e token do GPT Maker do localStorage
-        const cliente = JSON.parse(localStorage.getItem("cliente"));
-        const gptMakeId = cliente.gptMake.id;
-        const gptMakeToken = cliente.gptMake.token;
+        // const cliente = JSON.parse(localStorage.getItem("cliente"));
+        // const gptMakeId = cliente.gptMake.id;
+        // const gptMakeToken = cliente.gptMake.token;
+
+        const dom = `${url}${fileUrl}`; 
+        console.log("dom:", dom);
 
         const payload = {
             type: "DOCUMENT",
-            documentUrl: fileUrl,
+            documentUrl: dom,
             documentName: fileTraining.name,
             documentMimetype: fileTraining.type,
-        };
+        }
 
         try {
             const response = await fetch(
