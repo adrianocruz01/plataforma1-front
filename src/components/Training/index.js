@@ -48,6 +48,17 @@ const Training = ({ training, trainings, setTrainings, type }) => {
     }, []);
 
     const editTraining = async (trainingId) => {
+
+        const storageData = JSON.parse(localStorage.getItem('user'));
+        // console.log('aqqqqqqqqqqqqqqqqqqqqqqqqqqq',storageData) // Certifique-se de que está usando a chave correta
+        if (!storageData.cliente) {
+            toast.error("Dados do cliente não encontrados no local storage.");
+            return;
+        }
+
+        const gptMakeToken = storageData.cliente.gptMake.token;
+        const authlogin = storageData.token;
+
         if (!editingTrainingText) {
             toast.error(
                 "O campo de descrição do treinamento não pode ser vazio!"
@@ -66,10 +77,12 @@ const Training = ({ training, trainings, setTrainings, type }) => {
             }
 
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${trainingId}/edit-training`,
                 {
                     method: "PUT",
                     headers: {
+                        "Authorization": authlogin,
+                        "gptMakeToken": gptMakeToken,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(payload),
@@ -95,13 +108,28 @@ const Training = ({ training, trainings, setTrainings, type }) => {
     };
 
     const deleteTraining = async (trainingId) => {
+
+        const storageData = JSON.parse(localStorage.getItem('user'));
+        // console.log('aqqqqqqqqqqqqqqqqqqqqqqqqqqq',storageData) // Certifique-se de que está usando a chave correta
+        if (!storageData.cliente) {
+            toast.error("Dados do cliente não encontrados no local storage.");
+            return;
+        }
+
+        const gptMakeId = storageData.cliente.gptMake.id;
+        const gptMakeToken = storageData.cliente.gptMake.token;
+        const authlogin = storageData.token;
         setEditMenu(false);
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEURL}/trainings/training/${trainingId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${trainingId}/delete-training`,
                 {
                     method: "DELETE",
-                }
+                    headers: {
+                        "Authorization": authlogin,
+                        "gptMakeToken": gptMakeToken,
+                    }
+                },
             );
             if (response.ok) {
                 toast.success('Treinamento excluído!')
