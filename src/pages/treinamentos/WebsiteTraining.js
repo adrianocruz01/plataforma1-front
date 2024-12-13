@@ -14,27 +14,47 @@ const WebsiteTraining = () => {
 
     const fetchTrainings = async () => {
         try {
-            // Pegando o ID e token do GPT Maker do localStorage
-            const cliente = JSON.parse(localStorage.getItem("cliente"));
-            const gptMakeId = cliente.gptMake.id;
-            const gptMakeToken = cliente.gptMake.token;
-
+            // Pegando os dados do localStorage
+            const storageData = JSON.parse(localStorage.getItem("user"));
+            if (!storageData || !storageData.cliente) {
+                toast.error("Dados do cliente não encontrados.");
+                return;
+            }
+    
+            const gptMakeId = storageData.cliente.gptMake.id;
+            const gptMakeToken = storageData.cliente.gptMake.token;
+            const authlogin = storageData.token;
+    
+            // Fazer requisição para listar os sites
             const response = await fetch(
-                `/api/trainings/agent/${gptMakeId}?type=WEBSITE`,
+                `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/site-list-training?type=WEBSITE`,
                 {
                     method: "GET",
                     headers: {
-                        "Authorization": `Bearer ${gptMakeToken}`,
+                        "Authorization": authlogin,
+                        "gptMakeToken": gptMakeToken
                     },
                 }
             );
 
+            console.log('siteeeeeeeeeee', response)
+    
+            // Verificar se a resposta está OK
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Erro ao buscar treinamentos.");
+            }
+    
             const data = await response.json();
+    
+            // Atualizar o estado com os dados recebidos
             setTrainings(data.data);
         } catch (error) {
             console.error("Erro ao buscar treinamentos:", error);
+            toast.error("Erro ao buscar treinamentos. Tente novamente.");
         }
     };
+    
 
     const createTraining = async (e) => {
         if (!newTrainingWebsite) {
@@ -43,10 +63,17 @@ const WebsiteTraining = () => {
         }
         e.target.disabled = true;
 
-        // Pegando o ID e token do GPT Maker do localStorage
-        const cliente = JSON.parse(localStorage.getItem("cliente"));
-        const gptMakeId = cliente.gptMake.id;
-        const gptMakeToken = cliente.gptMake.token;
+            // Pegando os dados do localStorage
+            const storageData = JSON.parse(localStorage.getItem("user"));
+            
+            if (!storageData || !storageData.cliente) {
+                toast.error("Dados do cliente não encontrados.");
+                return;
+            }
+    
+            const gptMakeId = storageData.cliente.gptMake.id;
+            const gptMakeToken = storageData.cliente.gptMake.token;
+            const authlogin = storageData.token;
 
         const payload = {
             type: "WEBSITE",
@@ -57,12 +84,13 @@ const WebsiteTraining = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:3001/api/trainings/agent/${gptMakeId}`,
+                `${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${gptMakeToken}`,
+                        "gptmaketoken": `Bearer ${gptMakeToken}`,
+                        "Authorization": authlogin,
                     },
                     body: JSON.stringify(payload),
                 }
@@ -70,7 +98,7 @@ const WebsiteTraining = () => {
             const data = await response.json();
             if (response.ok) {
                 toast.success("Treinamento cadastrado!");
-                setTrainings([...trainings, data]);
+                fetchTrainings()
                 setNewTrainingWebsite("");
             } else {
                 toast.error("Erro ao criar treinamento.");
