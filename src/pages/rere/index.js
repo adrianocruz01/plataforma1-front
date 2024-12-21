@@ -18,6 +18,26 @@ const FormInput = ({ icon: Icon, ...props }) => (
   </div>
 );
 
+const FormSelect = ({ icon: Icon, options, ...props }) => (
+  <div className="relative group">
+    {Icon && <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors group-hover:text-cyan-400" />}
+    <select
+      {...props}
+      className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-3 
+                 text-white placeholder-gray-400 
+                 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+                 hover:bg-white/10 hover:border-white/20
+                 transition-all duration-300"
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
 const ActionButton = ({ children, loading, ...props }) => (
   <button
     {...props}
@@ -88,35 +108,34 @@ const UserIcon = () => (
 );
 
 // Componente InputWithButton melhorado
-const InputWithButton = ({ label, value, onChange, onClick, loading, placeholder }) => (
-  <div className="relative flex space-x-3">
-    <FormInput
-      type="text"
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      readOnly={loading}
-      icon={IdIcon}
-    />
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={loading}
-      className="flex-shrink-0 bg-gradient-to-r from-cyan-500 to-purple-500
-                 rounded-lg py-3 px-6 font-medium text-white
-                 hover:shadow-lg hover:shadow-cyan-500/25 hover:scale-[1.02]
-                 active:scale-[0.98]
-                 disabled:opacity-50 disabled:cursor-not-allowed
-                 transition-all duration-300 transform"
-    >
-      {loading ? (
-        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      ) : (
-        label
-      )}
-    </button>
-  </div>
-);
+const InputWithButton = ({ label, value, onClick, loading, placeholder }) => (
+    <div className="relative flex space-x-3">
+      <FormInput
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        readOnly
+        icon={IdIcon}
+      />
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={loading}
+        className="flex-shrink-0 bg-gradient-to-r from-cyan-500 to-purple-500
+                   rounded-lg py-3 px-6 font-medium text-white
+                   hover:shadow-lg hover:shadow-cyan-500/25 hover:scale-[1.02]
+                   active:scale-[0.98]
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   transition-all duration-300 transform"
+      >
+        {loading ? (
+          <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        ) : (
+          label
+        )}
+      </button>
+    </div>
+  );
 
 // Componente Principal
 export default function Register() {
@@ -127,11 +146,20 @@ export default function Register() {
         confirmarSenha: '',
         evoToken: '',
         gptToken: '',
+        instanceName: '',
+        jobDescription: '',
+        jobName: '',
+        behavior: '',
+        communicationType: 'FORMAL',
+        type: 'SUPPORT'
     });
 
+    const [isInstanceGenerated, setIsInstanceGenerated] = useState(false);
+    const [isAgentGenerated, setIsAgentGenerated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingInstance, setLoadingInstance] = useState(false);
     const [loadingGPT, setLoadingGPT] = useState(false);
+    const [step, setStep] = useState(1);
     const router = useRouter();
 
     const handleChange = (e) => {
@@ -189,16 +217,18 @@ export default function Register() {
     };
 
     const createEvolutionInstance = async () => {
+        if (isInstanceGenerated) return;
+    
         try {
             setLoadingInstance(true);
             const instanceBody = {
-                instanceName: formData.nome.replace(/\s+/g, ''),
+                instanceName: formData.instanceName.replace(/\s+/g, ''),
                 qrcode: true,
                 webhook: process.env.NEXT_PUBLIC_WEBHOOK_URL,
                 webhook_base64: true,
                 events: ['MESSAGES_UPSERT'],
             };
-
+    
             const response = await fetch('https://evolution.zury.ai/instance/create', {
                 method: 'POST',
                 headers: {
@@ -208,20 +238,21 @@ export default function Register() {
                 },
                 body: JSON.stringify(instanceBody),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Erro ao criar instância no Evolution');
             }
-
+    
             const data = await response.json();
             const instanceName = data.instance.instanceName;
-
+    
             setFormData((prev) => ({
                 ...prev,
                 evoToken: instanceName,
             }));
-
+    
+            setIsInstanceGenerated(true);
             toast.success('Instance ID gerado com sucesso!');
         } catch (error) {
             console.error('Erro ao gerar Instance ID:', error);
@@ -230,19 +261,21 @@ export default function Register() {
             setLoadingInstance(false);
         }
     };
-
+    
     const createGPTAgent = async () => {
+        if (isAgentGenerated) return;
+    
         try {
             setLoadingGPT(true);
             const agentBody = {
-                name: formData.nome,
-                behavior: '.',
-                communicationType: 'FORMAL',
-                type: 'SALE',
-                jobDescription: 'Descrição da empresa',
-                jobName: 'Nome da empresa'
+                name: formData.instanceName,
+                behavior: formData.behavior,
+                communicationType: formData.communicationType,
+                type: formData.type,
+                jobDescription: formData.jobDescription,
+                jobName: formData.jobName
             };
-
+    
             const response = await fetch('https://api.gptmaker.ai/v2/workspace/3C60D739C709E042E9C21686415D2D58/agents', {
                 method: 'POST',
                 headers: {
@@ -251,20 +284,21 @@ export default function Register() {
                 },
                 body: JSON.stringify(agentBody),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Erro ao criar agente no GPTMaker');
             }
-
+    
             const data = await response.json();
             const agentId = data.id;
-
+    
             setFormData((prev) => ({
                 ...prev,
                 gptToken: agentId,
             }));
-
+    
+            setIsAgentGenerated(true);
             toast.success('Agente GPT criado com sucesso!');
         } catch (error) {
             console.error('Erro ao criar agente GPT:', error);
@@ -273,6 +307,154 @@ export default function Register() {
             setLoadingGPT(false);
         }
     };
+
+    const renderStepOne = () => (
+        <>
+            <FormInput
+                type="text"
+                name="nome"
+                value={formData.nome}
+                onChange={handleChange}
+                placeholder="Seu nome completo"
+                required
+                icon={UserIcon}
+            />
+
+            <FormInput
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Seu email"
+                required
+                icon={EmailIcon}
+            />
+
+            <FormInput
+                type="password"
+                name="senha"
+                value={formData.senha}
+                onChange={handleChange}
+                placeholder="Sua senha"
+                required
+                icon={LockIcon}
+            />
+
+            <FormInput
+                type="password"
+                name="confirmarSenha"
+                value={formData.confirmarSenha}
+                onChange={handleChange}
+                placeholder="Confirme sua senha"
+                required
+                icon={LockIcon}
+            />
+
+            <ActionButton
+                type="button"
+                onClick={() => setStep(2)}
+            >
+                Próximo
+            </ActionButton>
+        </>
+    );
+
+    const renderStepTwo = () => (
+        <>
+            <FormInput
+                type="text"
+                name="instanceName"
+                value={formData.instanceName}
+                onChange={handleChange}
+                placeholder="Nome do Agente de IA"
+                required
+            />
+
+            <FormInput
+                type="text"
+                name="jobName"
+                value={formData.jobName}
+                onChange={handleChange}
+                placeholder="Nome do Produto ou Serviço"
+                required
+            />
+    
+            <FormInput
+                type="text"
+                name="jobDescription"
+                value={formData.jobDescription}
+                onChange={handleChange}
+                placeholder="Descrição do Produto ou Serviço"
+                required
+            />
+    
+            <FormInput
+                type="text"
+                name="behavior"
+                value={formData.behavior}
+                onChange={handleChange}
+                placeholder="Comportamento da IA"
+                required
+            />
+    
+            <FormSelect
+                name="communicationType"
+                value={formData.communicationType}
+                onChange={handleChange}
+                options={[
+                    { value: 'FORMAL', label: 'Formal' },
+                    { value: 'NORMAL', label: 'Normal' },
+                    { value: 'RELAXED', label: 'Descontraído' }
+                ]}
+                required
+            />
+    
+            <FormSelect
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                options={[
+                    { value: 'SUPPORT', label: 'Suporte' },
+                    { value: 'SALE', label: 'Venda' },
+                    { value: 'PERSONAL', label: 'Pessoal' }
+                ]}
+                required
+            />
+    
+            <InputWithButton
+                label="Gerar ID"
+                value={formData.evoToken}
+                onClick={createEvolutionInstance}
+                loading={loadingInstance}
+                placeholder="Instance ID"
+                readOnly
+            />
+    
+            <InputWithButton
+                label="Gerar Agente"
+                value={formData.gptToken}
+                onClick={createGPTAgent}
+                loading={loadingGPT}
+                placeholder="GPT Agent ID"
+                readOnly
+            />
+    
+            <ActionButton
+                type="submit"
+                disabled={loading}
+                loading={loading}
+            >
+                Criar conta
+            </ActionButton>
+    
+            <ActionButton
+                type="button"
+                onClick={() => setStep(1)}
+            >
+                Voltar
+            </ActionButton>
+        </>
+    );
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 p-4">
@@ -286,84 +468,17 @@ export default function Register() {
                     </div>
 
                     <form className="space-y-4" onSubmit={handleSubmit}>
-                        <FormInput
-                            type="text"
-                            name="nome"
-                            value={formData.nome}
-                            onChange={handleChange}
-                            placeholder="Seu nome completo"
-                            required
-                            icon={UserIcon}
-                        />
-
-                        <FormInput
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Seu email"
-                            required
-                            icon={EmailIcon}
-                        />
-
-                        <InputWithButton
-                            label="Gerar ID"
-                            value={formData.evoToken}
-                            onChange={(e) => handleChange({ target: { name: 'evoToken', value: e.target.value } })}
-                            onClick={createEvolutionInstance}
-                            loading={loadingInstance}
-                            placeholder="Instance ID"
-                            readOnly
-                        />
-
-                        <InputWithButton
-                            label="Gerar Agente"
-                            value={formData.gptToken}
-                            onChange={(e) => handleChange({ target: { name: 'gptToken', value: e.target.value } })}
-                            onClick={createGPTAgent}
-                            loading={loadingGPT}
-                            placeholder="GPT Agent ID"
-                            
-                        />
-                        
-
-                        <FormInput
-                            type="password"
-                            name="senha"
-                            value={formData.senha}
-                            onChange={handleChange}
-                            placeholder="Sua senha"
-                            required
-                            icon={LockIcon}
-                        />
-
-                        <FormInput
-                            type="password"
-                            name="confirmarSenha"
-                            value={formData.confirmarSenha}
-                            onChange={handleChange}
-                            placeholder="Confirme sua senha"
-                            required
-                            icon={LockIcon}
-                        />
-
-                        <ActionButton
-                            type="submit"
-                            disabled={loading}
-                            loading={loading}
-                        >
-                            Criar conta
-                        </ActionButton>
-
-                        <div className="text-center mt-4">
-                            <Link 
-                                href="/login" 
-                                className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
-                            >
-                                Já tem uma conta? Faça login
-                            </Link>
-                        </div>
+                        {step === 1 ? renderStepOne() : renderStepTwo()}
                     </form>
+
+                    <div className="text-center mt-4">
+                        <Link 
+                            href="/login" 
+                            className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
+                        >
+                            Já tem uma conta? Faça login
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
