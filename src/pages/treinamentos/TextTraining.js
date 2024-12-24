@@ -24,7 +24,7 @@ const TextTraining = () => {
             const gptMakeToken = storageData.cliente.gptMake.token;
             const authlogin = storageData.token;
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/text-trainings`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL_DEV}/api/treinos/agent/${gptMakeId}/text-trainings?pageSize=1000&page=2`, {
                 method: "GET",
                 headers: {
                     "Authorization": authlogin,
